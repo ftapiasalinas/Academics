@@ -1,0 +1,17 @@
+Computer science
+http://webdocs.cs.ualberta.ca/~zaiane/htmldocs/ConfRanking.html
+http://www.ntu.edu.sg/home/assourav/crank.htm
+http://academic.research.microsoft.com/RankList?entitytype=3&topDomainID=2&subDomainID=0
+
+//convinient
+http://www.conference-ranking.org/cs.html
+
+Journals  - all streams
+
+http://www.journal-ranking.com/ranking/listCommonRanking.html?selfCitationWeight=1&externalCitationWeight=1&citingStartYear=1901&journalListId=1
+
+//conferences
+http://lipn.univ-paris13.fr/~bennani/CSRank.html
+http://faculty.cs.tamu.edu/guofei/sec_conf_stat.htm
+http://www.ntu.edu.sg/home/assourav/crank.htm
+http://dsl.serc.iisc.ernet.in/publications/CS_ConfRank.htm

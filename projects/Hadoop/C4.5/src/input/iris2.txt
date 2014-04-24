@@ -1,0 +1,14 @@
+hot     sunny       high        weak    no 
+hot     sunny       high        strong  no
+hot     overcast    high        weak    yes
+mild    rain        high        weak    yes
+cool    rain        normal      weak    yes
+cool    rain        normal      strong  no
+cool    overcast    normal      strong  yes
+mild    sunny       high        weak    no
+cool    sunny       normal      weak    yes
+mild    rain        normal      weak    yes
+mild    sunny       normal      strong  yes
+mild    overcast    high        strong  yes
+hot     overcast    normal      weak    yes
+mild    rain        high        strong  no

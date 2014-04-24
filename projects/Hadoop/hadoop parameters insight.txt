@@ -1,0 +1,20 @@
+A.Block Size is dependent on or influences the following:
+	1. FileSize - complete input data to a map/reduce task should be split into as minimum files as possible (to reduce internal 		fragmentation) in the HDFS block.
+	2. Parallelism 
+	Constraint on number of Mappers - RAM,Core.
+	Min(cores available -1[reducer's part],(remaining RAM/memory occupied by a mapper))
+	this will give the max no of mappers that can run in parallel given we have enough data to process.
+		Equation:
+		Number of Mappers - roughly complete input size / HDFS Block size (if you have split the input to reduce internal 		fragmentation)
+		each separate file has a separate HDFS block allocated to it.
+
+		now then when we have number of mappers , then we can get HDFS block size as:
+
+		HDFS block size  = input data size / number of mappers
+
+B.Compression of map output - 
+	time to send compressed data + overhead < time to send uncompressed data (feasibility equation for compression)
+
+C.Speculative Execution - http://stackoverflow.com/questions/15164886/hadoop-speculative-task-execution
+D.Io.sort.mb - Maximize this and number of map tasks simultaneously.io.sort.mb is allocated to each and every map.So take care of 
+		too much swapping.http://stackoverflow.com/questions/18258078/increasing-io-sort-mb

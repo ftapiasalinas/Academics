@@ -1,0 +1,9 @@
+ 1 high high
+ 1 low low
+ 1 med 3 high high
+ 1 med 3 low 7 low low
+ 1 med 3 med 6 med low
+ 1 med 3 low 7 high 6 low low
+ 1 med 3 low 7 high 6 med high
+ 1 med 3 med 6 high 7 high high
+ 1 med 3 med 6 high 7 low 5 low high

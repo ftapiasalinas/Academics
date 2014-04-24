@@ -1,0 +1,43 @@
+Hadoop DataFlow:
+
+1. First of all there can be multiple mappers and reducers .
+2. The complete system works on key/value pairs.
+3. There are two main things:
+    HDFS
+    Mapper - Reduce
+
+4. hdfs is the architecture on which the complete hadoop works:
+    it has the following components which are vital to it's functioning
+    1. Namenode - This runs on the master node and is responsible for distributing the work(ie. the blocks to different)
+                    nodes .
+    2. Datanode - This is present on every node .This is what holds the data to be processed.
+    3. Job Tracker - Assignment of jobs and responsibility of getting the job done by the slaves is with this job
+                    tracker.(failure)
+    4. Task Tracker - present on every data node .reports back to job tracker for any kind of requirement.
+    5. Secondary Namenode - does the housekeeping business for namenode but remember that this is not the backup of the 
+                            namenode.
+
+5. If the namenode fails then the complete task fails.
+6. The Mapper reads data in the form of key/value pairs
+7. It outputs zero or more key/value pairs
+8. Hadoop attempts to ensure that Mappers run on nodes which
+   hold their portion of the data locally, to avoid network traffic
+9. If the Mapper writes anything out, the output must be in the form
+   of key/value pairs
+10.After the Map phase is over, all the intermediate values for a
+   given intermediate key are combined together into a list
+11.This list is given to a Reducer.
+    There may be a single Reducer, or multiple Reducers
+    – This is specified as part of the job configuration (see later)
+    – All values associated with a particular intermediate key are
+    guaranteed to go to the same Reducer
+    – The intermediate keys, and their value lists, are passed to the
+    Reducer in sorted key order
+    – This step is known as the ‘shuffle and sort’
+
+12. The Reducer outputs zero or more final key/value pairs
+    – These are written to HDFS
+    – In practice, the Reducer usually emits a single key/value pair for
+    each input key
+
+13. The job is complete here!

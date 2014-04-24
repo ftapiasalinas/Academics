@@ -1,0 +1,59 @@
+dfs.blocksize - The default block size for new files, in bytes. You can use the following suffix (case insensitive): k(kilo), m(mega), g(giga), t(tera), p(peta), e(exa) to specify the size (such as 128k, 512m, 1g, etc.), Or provide complete size in bytes (such as 134217728 for 128 MB). 
+
+dfs.namenode.fs-limits.min-block-size--   Minimum block size in bytes, enforced by the Namenode at create time. This prevents the accidental creation of files with tiny block sizes (and thus many blocks), which can degrade performance.
+
+mapreduce.tasktracker.map.tasks.maximum- The maximum number of map tasks that will be run simultaneously by a task tracker. (2)
+
+mapreduce.tasktracker.reduce.tasks.maximum - The maximum number of reduce tasks that will be run simultaneously by a task tracker. (2)
+
+mapreduce.jobtracker.maxtasks.perjob - The maximum number of tasks for a single job. A value of -1 indicates that there is no maximum. (-1)
+
+mapreduce.map.maxattempts - Expert: The maximum number of attempts per map task. In other words, framework will try to execute a map task these many number of times before giving up on it. (4)
+
+mapreduce.reduce.maxattempts - Expert: The maximum number of attempts per reduce task. In other words, framework will try to execute a reduce task these many number of times before giving up on it. 
+
+dfs.datanode.readahead.bytes - While reading block files, if the Hadoop native libraries are available, the datanode can use the posix_fadvise system call to explicitly page data into the operating system buffer cache ahead of the current reader's position. This can improve performance especially when disks are highly contended. This configuration specifies the number of bytes ahead of the current read position which the datanode will attempt to read ahead. This feature may be disabled by configuring this property to 0. If the native libraries are not available, this configuration has no effect. 
+
+mapreduce.reduce.shuffle.parallelcopies - The default number of parallel transfers run by reduce during the copy(shuffle) phase. (5)
+
+mapreduce.tasktracker.outofband.heartbeat - Expert: Set this to true to let the tasktracker send an out-of-band heartbeat on task-completion for better latency. (false)
+
+mapreduce.reduce.merge.inmem.threshold - The threshold, in terms of the number of files for the in-memory merge process. When we accumulate threshold number of files we initiate the in-memory merge and spill to disk. A value of 0 or less than 0 indicates we want to DON'T have any threshold and instead depend only on the ramfs's memory consumption to trigger the merge. (1000)
+
+mapreduce.reduce.shuffle.merge.percent - The usage threshold at which an in-memory merge will be initiated, expressed as a percentage of the total memory allocated to storing in-memory map outputs, as defined by mapreduce.reduce.shuffle.input.buffer.percent. (0.66)
+
+
+mapreduce.reduce.shuffle.input.buffer.percent - The percentage of memory to be allocated from the maximum heap size to storing map outputs during the shuffle. 
+
+mapreduce.map.speculative - If true, then multiple instances of some map tasks may be executed in parallel.
+
+mapreduce.reduce.speculative - 	If true, then multiple instances of some reduce tasks may be executed in parallel.
+
+mapreduce.map.output.compress - Should the outputs of the maps be compressed before being sent across the network. Uses SequenceFile compression. (false)
+
+mapreduce.task.io.sort.mb - The total amount of buffer memory to use while sorting files, in megabytes. By default, gives each merge stream 1MB, which should minimize seeks.(100)
+
+mapreduce.input.fileinputformat.split.minsize - The minimum size chunk that map input should be split into. Note that some file formats may have minimum split sizes that take priority over this setting.(0)
+
+mapreduce.task.io.sort.factor - The number of streams to merge at once while sorting files. This determines the number of open file handles.(10)
+
+mapreduce.client.submit.file.replication - The replication level for submitted job files. This should be around the square root of the number of nodes.(10) 
+
+dfs.datanode.sync.behind.writes(OS)
+mapreduce.map.cpu.vcores--- (OS)
+mapreduce.reduce.cpu.vcores---  (OS)
+
+mapreduce.tasktracker.http.threads--- (network)
+mapreduce.reduce.shuffle.connect.timeout--- ( network )
+mapreduce.reduce.shuffle.read.timeout--- ( network)
+mapreduce.task.timeout--- ( network )
+
+yarn.app.mapreduce.am.job.committer.cancel-timeout---(secondary)
+dfs.namenode.fs-limits.max-blocks-per-file---(secondary)
+dfs.client.block.write.retries(set to 1)--- (secondary)
+dfs.blockreport.intervalMsec---(secondary)
+dfs.namenode.replication.interval(secondary)
+dfs.ha.log-roll.period(secondary)
+dfs.cachereport.intervalMsec(secondary)
+mapreduce.jobtracker.handler.count(secondary)
+dfs.namenode.edit.log.autoroll.multiplier.threshold (secondary)

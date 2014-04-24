@@ -1,0 +1,10 @@
+low	low	low	med	med	med	med	low	med
+low	med	low	high	high	very	med	low	high
+low	med	low	low	med	med	med	low	med
+high	med	low	low	med	med	low	high	high
+low	med	low	med	med	high	high	high	high
+low	low	low	low	med	med	low	low	low
+low	med	low	low	med	very	med	low	med
+low	low	low	low	med	high	med	low	low
+low	med	low	med	med	med	high	low	med
+low	low	low	low	med	low	med	low	low

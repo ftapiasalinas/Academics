@@ -1,0 +1,18 @@
+jar cfv Project1.jar *
+javac -cp "/usr/local/hadoop/hadoop-core-1.1.2.jar" /home/pravin/Desktop/WordCount.java
+bin/hadoop dfs -copyFromLocal /home/pravin/Desktop/tests /user/hduser/gutenberg
+
+bin/hadoop dfs -copyFromLocal /home/pravin/Desktop/tests /user/hduser/gutenberg
+
+sequence of commands
+
+sudo javac -classpath  /usr/local/hadoop/hadoop-core-1.1.2.jar -d /home/pravin/Downloads/src/dt_classes/ *.java  //creates all .class files - put them in a folder
+ 
+jar cfv /usr/local/hadoop/dt.jar * //creates jar for all class files. While executing this command u mst b in directory where .class files are residing
+
+
+bin/hadoop jar /usr/local/hadoop/wordcount.jar WordCount /user/hduser/input /user/hduser/output
+ //cant give input/output directory on host machine - got to create one in hdfs
+ 
+ bin/hadoop dfs -copyToLocal /user/hduser/output/ /home/pravin/Desktop/output/
+

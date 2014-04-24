@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!-->
+<html style="" class=" js no-flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage no-websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients no-cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" lang="en"><!--<![endif]--><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/miguno.json" async=""></script>
+  <meta charset="utf-8">
+  <title>Running Hadoop On Ubuntu Linux (Multi-Node Cluster) - Michael G. Noll</title>
+  <meta name="author" content="Michael G. Noll">
+
+  
+  <meta name="description" content="In this tutorial I will describe the required steps for setting up a distributed, multi-node
+Apache Hadoop cluster backed by the Hadoop Distributed …">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-multi-node-cluster/">
+  <link href="http://www.michael-noll.com/favicon.png?v=2" rel="icon">
+  <link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script async="" id="recentTweets" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/twitter.js"></script><script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/ga.js" async="" type="text/javascript"></script><script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/modernizr-2.js"></script>
+  <script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/ender.js"></script>
+  <script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/michael-noll" rel="alternate" title="Michael G. Noll" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/css_002.css" rel="stylesheet" type="text/css">
+<link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/css_004.css" rel="stylesheet" type="text/css">
+<link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/css.css" rel="stylesheet" type="text/css">
+<link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/css_005.css" rel="stylesheet" type="text/css">
+<link href="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/css_003.css" rel="stylesheet" type="text/css">
+<!-- jQuery for obfuscating contact email address; see https://gist.github.com/961154 -->
+<script type="text/javascript" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/jquery.js"></script>
+<!-- jQuery ToC plugin; see http://fuelyourcoding.com/scripts/toc/ -->
+<script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/jquery_002.js" type="text/javascript"></script>
+<script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/generate-toc.js" type="text/javascript"></script>
+
+<!-- mathjax config similar to math.stackexchange; see http://chuchao333.github.com/blog/2012/08/18/supporting-latex-in-octopress/ -->
+<script type="text/x-mathjax-config;executed=true">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config;executed=true">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config;executed=true">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/MathJax.js">
+</script>
+
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-548617-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+<script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/embed.js" async="" type="text/javascript"></script><script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/widgets.js" async="" type="text/javascript"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style></head>
+
+<body data-twttr-rendered="true"><div style="display: none;" id="MathJax_Message"></div>
+  <header role="banner"><hgroup>
+  <h1><a href="http://www.michael-noll.com/">Michael G. Noll</a></h1>
+  
+    <h2>Applied Research. Big Data. Distributed Systems.  Open Source.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="http://feeds.feedburner.com/michael-noll" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input name="q" value="site:www.michael-noll.com" type="hidden">
+    <input class="search" name="q" results="0" placeholder="Search" type="text">
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+    <li><a href="http://www.michael-noll.com/"><i class="icon-home"></i> Blog</a></li>
+    <li><a href="http://www.michael-noll.com/blog/archives">Archive</a></li>
+    <li><a href="http://www.michael-noll.com/tutorials/">Tutorials</a></li>
+    <li><a href="http://www.michael-noll.com/projects/">Projects</a></li>
+    <li><a href="http://www.michael-noll.com/publications/">Publications</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Running Hadoop on Ubuntu Linux (Multi-Node Cluster)</h1>
+    
+  </header>
+  
+  <div id="tocBlock"><span class="tocHeading">Table of Contents</span><ul id="toc"><li>
+<a href="#tutorial-approach-and-structure">Tutorial approach and structure</a>
+</li>
+<li>
+<a href="#prerequisites">Prerequisites</a>
+<ul>
+<li>
+<a href="#configuring-single-node-clusters-first">Configuring single-node clusters first</a>
+</li>
+<li>
+<a href="#done-lets-continue-then">Done? Let’s continue then!</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#networking">Networking</a>
+</li>
+<li>
+<a href="#ssh-access">SSH access</a>
+</li>
+<li>
+<a href="#hadoop">Hadoop</a>
+<ul>
+<li>
+<a href="#cluster-overview-aka-the-goal">Cluster Overview (aka the goal)</a>
+</li>
+<li>
+<a href="#masters-vs-slaves">Masters vs. Slaves</a>
+</li>
+<li>
+<a href="#configuration">Configuration</a>
+<ul>
+<li>
+<a href="#confmasters-master-only">conf/masters (master only)</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#confslaves-master-only">conf/slaves (master only)</a>
+<ul>
+<li>
+<ul>
+<li>
+<a href="#conf-sitexml-all-machines">conf/*-site.xml (all machines)</a>
+</li>
+<li>
+<a href="#additional-settings">Additional Settings</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#formatting-the-hdfs-filesystem-via-the-namenode">Formatting the HDFS filesystem via the NameNode</a>
+</li>
+<li>
+<a href="#starting-the-multi-node-cluster">Starting the multi-node cluster</a>
+<ul>
+<li>
+<a href="#hdfs-daemons">HDFS daemons</a>
+</li>
+<li>
+<a href="#mapreduce-daemons">MapReduce daemons</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#stopping-the-multi-node-cluster">Stopping the multi-node cluster</a>
+<ul>
+<li>
+<a href="#mapreduce-daemons-1">MapReduce daemons</a>
+</li>
+<li>
+<a href="#hdfs-daemons-1">HDFS daemons</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#running-a-mapreduce-job">Running a MapReduce job</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#caveats">Caveats</a>
+<ul>
+<li>
+<a href="#javaioioexception-incompatible-namespaceids">java.io.IOException: Incompatible namespaceIDs</a>
+<ul>
+<li>
+<a href="#solution-1-start-from-scratch">Solution 1: Start from scratch</a>
+</li>
+<li>
+<a href="#solution-2-manually-update-the-namespaceid-of-problematic-datanodes">Solution 2: Manually update the namespaceID of problematic DataNodes</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<a href="#where-to-go-from-here">Where to go from here</a>
+</li>
+<li>
+<a href="#related-links">Related Links</a>
+</li>
+<li>
+<a href="#change-log">Change Log</a>
+</li>
+</ul></div><div class="entry-content"><p>In this tutorial I will describe the required steps for setting up a <em>distributed, multi-node</em>
+<a href="http://hadoop.apache.org/">Apache Hadoop</a> cluster backed by the Hadoop Distributed File System (HDFS), running on
+Ubuntu Linux.</p>
+
+<div class="pointer">
+Are you looking for the <a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">single-node cluster tutorial</a>? Just <a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">head over there</a>.
+</div>
+
+<p>Hadoop is a framework written in Java for running applications on large clusters of commodity hardware and incorporates
+features similar to those of the <a href="http://en.wikipedia.org/wiki/Google_File_System">Google File System (GFS)</a> and of the
+<a href="http://en.wikipedia.org/wiki/MapReduce">MapReduce</a> computing paradigm.
+Hadoop’s <a href="http://hadoop.apache.org/hdfs/docs/current/hdfs_design.html">HDFS</a> is a highly fault-tolerant distributed file
+system and, like Hadoop in general, designed to be deployed on low-cost hardware.  It provides high throughput access to</p>
+
+<p>In a previous tutorial, I described
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">how to setup up a Hadoop single-node cluster</a> on an
+Ubuntu box.  The main goal of <em>this</em> tutorial is to get a more sophisticated Hadoop installation up and running, namely
+building a multi-node cluster using two Ubuntu boxes.</p>
+
+<p>This tutorial has been tested with the following software versions:</p>
+
+<ul>
+  <li><a href="http://www.ubuntu.com/">Ubuntu Linux</a> 10.04 LTS (deprecated: 8.10 LTS, 8.04, 7.10, 7.04)</li>
+  <li><a href="http://hadoop.apache.org/">Hadoop</a> 1.0.3, released May 2012</li>
+</ul>
+
+<p><img src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/Yahoo-hadoop-cluster_OSCON_2007.jpeg" title="Cluster of machines running Hadoop at Yahoo!"></p>
+
+<div class="caption">
+Figure 1: Cluster of machines running Hadoop at Yahoo! (Source: Yahoo!)
+</div>
+
+<h1 id="tutorial-approach-and-structure">Tutorial approach and structure</h1>
+
+<p><strong>From two single-node clusters to a multi-node cluster</strong> – We will build a multi-node cluster using two Ubuntu boxes
+in this tutorial.  In my humble opinion, the best way to do this for starters is to install, configure and test a
+“local” Hadoop setup for each of the two Ubuntu boxes, and in a second step to “merge” these two single-node clusters
+into one multi-node cluster in which one Ubuntu box will become the designated master (but also act as a slave with
+regard to data storage and processing), and the other box will become only a slave.  It’s much easier to track down any
+problems you might encounter due to the reduced complexity of doing a single-node cluster setup first on each machine.</p>
+
+<p><img src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/Hadoop-multi-node-cluster_tutorial-structure.png" title="Hadoop multi-node cluster tutorial structure" height="377" width="364"></p>
+
+<div class="caption">
+Figure 2: Tutorial approach and structure
+</div>
+
+<p>Let’s get started!</p>
+
+<h1 id="prerequisites">Prerequisites</h1>
+
+<h2 id="configuring-single-node-clusters-first">Configuring single-node clusters first</h2>
+
+<p>The tutorial approach outlined above means that you should read now my previous tutorial on
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">how to setup up a Hadoop single-node cluster</a> and
+follow the steps described there to build a single-node Hadoop cluster on each of the two Ubuntu boxes.  It is
+recommended that you use the ‘‘same settings’’ (e.g., installation locations and paths) on both machines, or otherwise
+you might run into problems later when we will migrate the two machines to the final multi-node cluster setup.</p>
+
+<p>Just keep in mind when
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">setting up the single-node clusters</a> that we will
+later connect and “merge” the two machines, so pick reasonable network settings etc. now for a smooth transition later.</p>
+
+<h2 id="done-lets-continue-then">Done? Let’s continue then!</h2>
+
+<p>Now that you have two single-node clusters up and running, we will modify the Hadoop configuration to make one Ubuntu
+box the “master” (which will also act as a slave) and the other Ubuntu box a “slave”.</p>
+
+<div class="note">
+Note: We will call the designated master machine just the “master“ from 
+now on and the slave-only machine the “slave“.  We will also give the 
+two machines these respective hostnames in their networking setup, most 
+notably in “/etc/hosts“.  If the hostnames of your machines are 
+different (e.g. “node01“) then you must adapt the settings in this 
+tutorial as appropriate.
+</div>
+
+<p>Shutdown each single-node cluster with <code>bin/stop-all.sh</code> before continuing if you haven’t done so already.</p>
+
+<h1 id="networking">Networking</h1>
+
+<p>This should come hardly as a surprise, but for the sake of completeness I have to point out that both machines must be
+able to reach each other over the network.  The easiest is to put both machines in the same network with regard to
+hardware and software configuration, for example connect both machines via a single hub or switch and configure the
+network interfaces to use a common network such as <code>192.168.0.x/24</code>.</p>
+
+<p>To make it simple, we will assign the IP address <code>192.168.0.1</code> to the <code>master</code> machine and <code>192.168.0.2</code> to the <code>slave</code> machine. Update <code>/etc/hosts</code> on both machines with the following lines:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>/etc/hosts (for master AND slave) </span></figcaption>
+<div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">192.168.0.1    master
+</span><span class="line">192.168.0.2    slave</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h1 id="ssh-access">SSH access</h1>
+
+<p>The <code>hduser</code> user on the <code>master</code> (aka <code>hduser@master</code>) must be able to connect a) to its own user account on the
+<code>master</code> – i.e. <code>ssh master</code> in this context and not necessarily <code>ssh localhost</code> – and b) to the <code>hduser</code> user
+account on the <code>slave</code> (aka <code>hduser@slave</code>) via a password-less SSH login.  If you followed my
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">single-node cluster tutorial</a>, you just have to add the
+<code>hduser@master</code>’s public SSH key (which should be in <code>$HOME/.ssh/id_rsa.pub</code>) to the <code>authorized_keys</code> file of
+<code>hduser@slave</code> (in this user’s <code>$HOME/.ssh/authorized_keys</code>).  You can do this manually or use the
+<a href="http://www.debian-administration.org/articles/152">following SSH command</a>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Distribute the SSH public key of hduser@master  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:~<span class="nv">$ </span>ssh-copy-id -i <span class="nv">$HOME</span>/.ssh/id_rsa.pub hduser@slave
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>This command will prompt you for the login password for user <code>hduser</code> on <code>slave</code>, then copy the public SSH key for
+you, creating the correct directory and fixing the permissions as necessary.</p>
+
+<p>The final step is to test the SSH setup by connecting with user <code>hduser</code> from the <code>master</code> to the user account
+<code>hduser</code> on the <code>slave</code>.  The step is also needed to save <code>slave</code>’s host key fingerprint to the
+<code>hduser@master</code>’s <code>known_hosts</code> file.</p>
+
+<p>So, connecting from <code>master</code> to <code>master</code>…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:~<span class="nv">$ </span>ssh master
+</span><span class="line">The authenticity of host <span class="s1">'master (192.168.0.1)'</span> can<span class="s1">'t be established.</span>
+</span><span class="line"><span class="s1">RSA key fingerprint is 3b:21:b3:c0:21:5c:7c:54:2f:1e:2d:96:79:eb:7f:95.</span>
+</span><span class="line"><span class="s1">Are you sure you want to continue connecting (yes/no)? yes</span>
+</span><span class="line"><span class="s1">Warning: Permanently added '</span>master<span class="err">'</span> <span class="o">(</span>RSA<span class="o">)</span> to the list of known hosts.
+</span><span class="line">Linux master 2.6.20-16-386 <span class="c">#2 Thu Jun 7 20:16:13 UTC 2007 i686</span>
+</span><span class="line">...
+</span><span class="line">hduser@master:~<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>…and from <code>master</code> to <code>slave</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:~<span class="nv">$ </span>ssh slave
+</span><span class="line">The authenticity of host <span class="s1">'slave (192.168.0.2)'</span> can<span class="s1">'t be established.</span>
+</span><span class="line"><span class="s1">RSA key fingerprint is 74:d7:61:86:db:86:8f:31:90:9c:68:b0:13:88:52:72.</span>
+</span><span class="line"><span class="s1">Are you sure you want to continue connecting (yes/no)? yes</span>
+</span><span class="line"><span class="s1">Warning: Permanently added '</span>slave<span class="err">'</span> <span class="o">(</span>RSA<span class="o">)</span> to the list of known hosts.
+</span><span class="line">Ubuntu 10.04
+</span><span class="line">...
+</span><span class="line">hduser@slave:~<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h1 id="hadoop">Hadoop</h1>
+
+<h2 id="cluster-overview-aka-the-goal">Cluster Overview (aka the goal)</h2>
+
+<p>The next sections will describe how to configure one Ubuntu box as a master node and the other Ubuntu box as a slave
+node.  The master node will also act as a slave because we only have two machines available in our cluster but still
+want to spread data storage and processing to multiple machines.</p>
+
+<p><img src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/Hadoop-multi-node-cluster-overview.png" title="Overview of Hadoop multi-node cluster setup" height="404" width="520"></p>
+
+<div class="caption">
+Figure 3: How the final multi-node cluster will look like
+</div>
+
+<p>The master node will run the “master” daemons for each layer: NameNode for the HDFS storage layer, and JobTracker for
+the MapReduce processing layer.  Both machines will run the “slave” daemons: DataNode for the HDFS layer, and
+TaskTracker for MapReduce processing layer.  Basically, the “master” daemons are responsible for coordination and
+management of the “slave” daemons while the latter will do the actual data storage and data processing work.</p>
+
+<h2 id="masters-vs-slaves">Masters vs. Slaves</h2>
+
+<blockquote><p>Typically one machine in the cluster is designated as the
+ NameNode and another machine the as JobTracker, exclusively. These are 
+the actual “master nodes”. The rest of the machines in the cluster act 
+as both DataNode and TaskTracker. These are the slaves or “worker 
+nodes”.</p><footer><strong>Hadoop 1.x documentation</strong> <cite><a href="http://hadoop.apache.org/common/docs/r1.0.3/cluster_setup.html">hadoop.apache.org/common/docs/…</a></cite></footer></blockquote>
+
+<h2 id="configuration">Configuration</h2>
+
+<h3 id="confmasters-master-only">conf/masters (<code>master</code> only)</h3>
+
+<p>Despite its name, the <code>conf/masters</code> file defines on which machines Hadoop will start <em>secondary NameNodes</em> in our
+multi-node cluster.  In our case, this is just the <code>master</code> machine.  The primary NameNode and the JobTracker will
+always be the machines on which you run the <code>bin/start-dfs.sh</code> and <code>bin/start-mapred.sh</code> scripts, respectively (the
+primary NameNode and the JobTracker will be started on the same machine if you run <code>bin/start-all.sh</code>).</p>
+
+<div class="note">
+Note: You can also start an Hadoop daemon manually on a machine via <tt>bin/hadoop-daemon.sh start [namenode | secondarynamenode | datanode | jobtracker | tasktracker]</tt>, which will not take the “conf/masters“ and “conf/slaves“ files into account.
+</div>
+
+<p>Here are more details regarding the <code>conf/masters</code> file:</p>
+
+<blockquote><p>The secondary NameNode merges the fsimage and the edits 
+log files periodically and keeps edits log size within a limit. It is 
+usually run on a different machine than the primary NameNode since its 
+memory requirements are on the same order as the primary NameNode. The 
+secondary NameNode is started by “bin/start-dfs.sh“ on the nodes 
+specified in “conf/masters“ file.</p><footer><strong>Hadoop HDFS user guide</strong> <cite><a href="http://hadoop.apache.org/common/docs/r1.0.3/hdfs_user_guide.html#Secondary+NameNode">hadoop.apache.org/common/docs/…</a></cite></footer></blockquote>
+
+<p>Again, the machine on which <code>bin/start-dfs.sh</code> is run will become the <em>primary</em> NameNode.</p>
+
+<p>On <code>master</code>, update <code>conf/masters</code> that it looks like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/masters (on master) </span></figcaption>
+<div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">master</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h1 id="confslaves-master-only">conf/slaves (<code>master</code> only)</h1>
+
+<p>The <code>conf/slaves</code> file lists the hosts, one per line, where the Hadoop slave daemons (DataNodes and TaskTrackers)
+will be run.  We want both the <code>master</code> box and the <code>slave</code> box to act as Hadoop slaves because we want both of
+them to store and process data.</p>
+
+<p>On <code>master</code>, update <code>conf/slaves</code> that it looks like this:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/slaves (on master) </span></figcaption>
+<div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">master
+</span><span class="line">slave</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>If you have additional slave nodes, just add them to the <code>conf/slaves</code> file, one hostname per line.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/slaves (on master) </span></figcaption>
+<div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">master
+</span><span class="line">slave
+</span><span class="line">anotherslave01
+</span><span class="line">anotherslave02
+</span><span class="line">anotherslave03</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<div class="note">
+Note: The <tt>conf/slaves</tt> file on <tt>master</tt> is used only by the scripts like <tt>bin/start-dfs.sh</tt> or <tt>bin/stop-dfs.sh</tt>.
+  For example, if you want to add DataNodes on the fly (which is not 
+described in this tutorial yet), you can “manually” start the DataNode 
+daemon on a new slave machine via <tt>bin/hadoop-daemon.sh start datanode</tt>.  Using the <tt>conf/slaves</tt> file on the master simply helps you to make “full” cluster restarts easier.
+</div>
+
+<h3 id="conf-sitexml-all-machines">conf/*-site.xml (all machines)</h3>
+
+<p>You must change the configuration files <code>conf/core-site.xml</code>, <code>conf/mapred-site.xml</code> and <code>conf/hdfs-site.xml</code> on
+ALL machines as follows.</p>
+
+<p>First, we have to change the
+<a href="http://hadoop.apache.org/core/docs/current/hadoop-default.html#fs.default.name">fs.default.name</a> parameter (in
+<code>conf/core-site.xml</code>), which specifies the
+<a href="http://hadoop.apache.org/core/docs/current/api/overview-summary.html">NameNode</a> (the HDFS master) host and port.  In
+our case, this is the <code>master</code> machine.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/core-site.xml (ALL machines)  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;property&gt;</span>
+</span><span class="line">  <span class="nt">&lt;name&gt;</span>fs.default.name<span class="nt">&lt;/name&gt;</span>
+</span><span class="line">  <span class="nt">&lt;value&gt;</span>hdfs://master:54310<span class="nt">&lt;/value&gt;</span>
+</span><span class="line">  <span class="nt">&lt;description&gt;</span>The name of the default file system.  A URI whose
+</span><span class="line">  scheme and authority determine the FileSystem implementation.  The
+</span><span class="line">  uri's scheme determines the config property (fs.SCHEME.impl) naming
+</span><span class="line">  the FileSystem implementation class.  The uri's authority is used to
+</span><span class="line">  determine the host, port, etc. for a filesystem.<span class="nt">&lt;/description&gt;</span>
+</span><span class="line"><span class="nt">&lt;/property&gt;</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>Second, we have to change the
+<a href="http://hadoop.apache.org/core/docs/current/hadoop-default.html#mapred.job.tracker">mapred.job.tracker</a> parameter (in
+<code>conf/mapred-site.xml</code>), which specifies the
+<a href="http://hadoop.apache.org/core/docs/current/api/org/apache/hadoop/mapred/JobTracker.html">JobTracker</a> (MapReduce
+master) host and port.  Again, this is the <code>master</code> in&nbsp;our case.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/mapred-site.xml (ALL machines)  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;property&gt;</span>
+</span><span class="line">  <span class="nt">&lt;name&gt;</span>mapred.job.tracker<span class="nt">&lt;/name&gt;</span>
+</span><span class="line">  <span class="nt">&lt;value&gt;</span>master:54311<span class="nt">&lt;/value&gt;</span>
+</span><span class="line">  <span class="nt">&lt;description&gt;</span>The host and port that the MapReduce job tracker runs
+</span><span class="line">  at.  If "local", then jobs are run in-process as a single map
+</span><span class="line">  and reduce task.
+</span><span class="line">  <span class="nt">&lt;/description&gt;</span>
+</span><span class="line"><span class="nt">&lt;/property&gt;</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>Third, we change the
+<a href="http://hadoop.apache.org/core/docs/current/hadoop-default.html#dfs.replication">dfs.replication</a> parameter (in
+<code>conf/hdfs-site.xml</code>) which specifies the default block 
+replication.  It defines how many machines a single file
+should be replicated to before it becomes available.  If you set this to
+ a value higher than the number of available
+slave nodes (more precisely, the number of DataNodes), you will start 
+seeing a lot of “(Zero targets found, forbidden1.size=1)” type errors in
+ the log files.</p>
+
+<p>The default value of <code>dfs.replication</code> is <code>3</code>. However, we have only two nodes available, so we set
+<code>dfs.replication</code> to <code>2</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>conf/hdfs-site.xml (ALL machines)  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="xml"><span class="line"><span class="nt">&lt;property&gt;</span>
+</span><span class="line">  <span class="nt">&lt;name&gt;</span>dfs.replication<span class="nt">&lt;/name&gt;</span>
+</span><span class="line">  <span class="nt">&lt;value&gt;</span>2<span class="nt">&lt;/value&gt;</span>
+</span><span class="line">  <span class="nt">&lt;description&gt;</span>Default block replication.
+</span><span class="line">  The actual number of replications can be specified when the file is created.
+</span><span class="line">  The default is used if replication is not specified in create time.
+</span><span class="line">  <span class="nt">&lt;/description&gt;</span>
+</span><span class="line"><span class="nt">&lt;/property&gt;</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h3 id="additional-settings">Additional Settings</h3>
+
+<p>There are some other configuration options worth studying.  The following information is taken from the
+<a href="http://hadoop.apache.org/core/docs/current/api/overview-summary.html">Hadoop API Overview</a>.</p>
+
+<p>In file <code>conf/mapred-site.xml</code>:</p>
+
+<dl>
+    <dt>“mapred.local.dir“</dt>
+    <dd>Determines where temporary MapReduce data is written. It also may be a list of directories.</dd>
+
+    <dt>“mapred.map.tasks“</dt>
+    <dd>As a rule of thumb, use 10x the number of slaves (i.e., number of TaskTrackers).</dd>
+
+    <dt>“mapred.reduce.tasks“</dt>
+    <dd>As a rule of thumb, use num_tasktrackers * num_reduce_slots_per_tasktracker * 0.99.  If num_tasktrackers is
+    small (as in the case of this tutorial), use (num_tasktrackers - 1) * num_reduce_slots_per_tasktracker.</dd>
+</dl>
+
+<h2 id="formatting-the-hdfs-filesystem-via-the-namenode">Formatting the HDFS filesystem via the NameNode</h2>
+
+<p>Before we start our new multi-node cluster, we must format Hadoop’s distributed filesystem (HDFS) via the NameNode.
+You need to do this the first time you set up an Hadoop cluster.</p>
+
+<div class="warning">
+Warning: Do not format a running cluster because this will erase all existing data in the HDFS filesytem!
+</div>
+
+<p>To format the filesystem (which simply initializes the directory specified by the <code>dfs.name.dir</code> variable on the
+NameNode), run the command</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Format the cluster’s HDFS file system  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/hadoop namenode -format
+</span><span class="line">... INFO dfs.Storage: Storage directory /app/hadoop/tmp/dfs/name has been successfully formatted.
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>Background: The HDFS name table is stored on the NameNode’s (here: <code>master</code>) local filesystem in the directory
+specified by <code>dfs.name.dir</code>.  The name table is used by the NameNode to store tracking and coordination information
+for the DataNodes.</p>
+
+<h2 id="starting-the-multi-node-cluster">Starting the multi-node cluster</h2>
+
+<p>Starting the cluster is performed in two steps.</p>
+
+<ol>
+  <li>We begin with starting the HDFS daemons: the NameNode daemon is started on <code>master</code>, and DataNode daemons are
+started on all slaves (here: <code>master</code> and <code>slave</code>).</li>
+  <li>Then we start the MapReduce daemons: the JobTracker is started on <code>master</code>, and TaskTracker daemons are started on
+all slaves (here: <code>master</code> and <code>slave</code>).</li>
+</ol>
+
+<h3 id="hdfs-daemons">HDFS daemons</h3>
+
+<p>Run the command <code>bin/start-dfs.sh</code> on the machine you want the (primary) NameNode to run on. This will bring up HDFS
+with the NameNode running on the machine you ran the previous command on, and DataNodes on the machines listed in the
+<code>conf/slaves</code> file.</p>
+
+<p>In our case, we will run <code>bin/start-dfs.sh</code> on <code>master</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Start the HDFS layer  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/start-dfs.sh
+</span><span class="line">starting namenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-namenode-master.out
+</span><span class="line">slave: Ubuntu 10.04
+</span><span class="line">slave: starting datanode, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-datanode-slave.out
+</span><span class="line">master: starting datanode, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-datanode-master.out
+</span><span class="line">master: starting secondarynamenode, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-secondarynamenode-master.out
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>On <code>slave</code>, you can examine the success or failure of this command by inspecting the log file
+<code>logs/hadoop-hduser-datanode-slave.log</code>.</p>
+
+<p>Example output:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">... INFO org.apache.hadoop.dfs.Storage: Storage directory /app/hadoop/tmp/dfs/data is not formatted.
+</span><span class="line">... INFO org.apache.hadoop.dfs.Storage: Formatting ...
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Opened server at 50010
+</span><span class="line">... INFO org.mortbay.util.Credential: Checking Resource aliases
+</span><span class="line">... INFO org.mortbay.http.HttpServer: Version Jetty/5.1.4
+</span><span class="line">... INFO org.mortbay.util.Container: Started org.mortbay.jetty.servlet.WebApplicationHandler@17a8a02
+</span><span class="line">... INFO org.mortbay.util.Container: Started WebApplicationContext[/,/]
+</span><span class="line">... INFO org.mortbay.util.Container: Started HttpContext[/logs,/logs]
+</span><span class="line">... INFO org.mortbay.util.Container: Started HttpContext[/static,/static]
+</span><span class="line">... INFO org.mortbay.http.SocketListener: Started SocketListener on 0.0.0.0:50075
+</span><span class="line">... INFO org.mortbay.util.Container: Started org.mortbay.jetty.Server@56a499
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Starting DataNode in: FSDataset{dirpath='/app/hadoop/tmp/dfs/data/current'}
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: using BLOCKREPORT_INTERVAL of 3538203msec</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>As you can see in <code>slave</code>’s output above, it will automatically format its storage directory (specified by the
+<code>dfs.data.dir</code> parameter) if it is not formatted already. It will also create the directory if it does not exist yet.</p>
+
+<p>At this point, the following Java processes should run on <code>master</code>…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on master after starting HDFS daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">14799 NameNode
+</span><span class="line">15314 Jps
+</span><span class="line">14880 DataNode
+</span><span class="line">14977 SecondaryNameNode
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>(the process IDs don’t matter of course)</p>
+
+<p>…and the following on <code>slave</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on slave after starting HDFS daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@slave:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">15183 DataNode
+</span><span class="line">15616 Jps
+</span><span class="line">hduser@slave:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h3 id="mapreduce-daemons">MapReduce daemons</h3>
+
+<p>Run the command <code>bin/start-mapred.sh</code> on the machine you want the JobTracker to run on.  This will bring up the
+MapReduce cluster with the JobTracker running on the machine you ran the previous command on, and TaskTrackers on the
+machines listed in the <code>conf/slaves</code> file.</p>
+
+<p>In our case, we will run <code>bin/start-mapred.sh</code> on <code>master</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Start the MapReduce layer  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/start-mapred.sh
+</span><span class="line">starting jobtracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hadoop-jobtracker-master.out
+</span><span class="line">slave: Ubuntu 10.04
+</span><span class="line">slave: starting tasktracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-tasktracker-slave.out
+</span><span class="line">master: starting tasktracker, logging to /usr/local/hadoop/bin/../logs/hadoop-hduser-tasktracker-master.out
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>On <code>slave</code>, you can examine the success or failure of this command by inspecting the log file <code>logs/hadoop-hduser-tasktracker-slave.log</code>. Example output:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">... INFO org.mortbay.util.Credential: Checking Resource aliases
+</span><span class="line">... INFO org.mortbay.http.HttpServer: Version Jetty/5.1.4
+</span><span class="line">... INFO org.mortbay.util.Container: Started org.mortbay.jetty.servlet.WebApplicationHandler@d19bc8
+</span><span class="line">... INFO org.mortbay.util.Container: Started WebApplicationContext[/,/]
+</span><span class="line">... INFO org.mortbay.util.Container: Started HttpContext[/logs,/logs]
+</span><span class="line">... INFO org.mortbay.util.Container: Started HttpContext[/static,/static]
+</span><span class="line">... INFO org.mortbay.http.SocketListener: Started SocketListener on 0.0.0.0:50060
+</span><span class="line">... INFO org.mortbay.util.Container: Started org.mortbay.jetty.Server@1e63e3d
+</span><span class="line">... INFO org.apache.hadoop.ipc.Server: IPC Server listener on 50050: starting
+</span><span class="line">... INFO org.apache.hadoop.ipc.Server: IPC Server handler 0 on 50050: starting
+</span><span class="line">... INFO org.apache.hadoop.mapred.TaskTracker: TaskTracker up at: 50050
+</span><span class="line">... INFO org.apache.hadoop.mapred.TaskTracker: Starting tracker tracker_slave:50050
+</span><span class="line">... INFO org.apache.hadoop.ipc.Server: IPC Server handler 1 on 50050: starting
+</span><span class="line">... INFO org.apache.hadoop.mapred.TaskTracker: Starting thread: Map-events fetcher for all reduce tasks on tracker_slave:50050</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>At this point, the following Java processes should run on <code>master</code>…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on master after starting MapReduce daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">16017 Jps
+</span><span class="line">14799 NameNode
+</span><span class="line">15686 TaskTracker
+</span><span class="line">14880 DataNode
+</span><span class="line">15596 JobTracker
+</span><span class="line">14977 SecondaryNameNode
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>(the process IDs don’t matter of course)</p>
+
+<p>…and the following on <code>slave</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on slave after starting MapReduce daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@slave:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">15183 DataNode
+</span><span class="line">15897 TaskTracker
+</span><span class="line">16284 Jps
+</span><span class="line">hduser@slave:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h2 id="stopping-the-multi-node-cluster">Stopping the multi-node cluster</h2>
+
+<p>Like starting the cluster, stopping it is done in two steps.  The workflow however is the opposite of starting.</p>
+
+<ol>
+  <li>We begin with stopping the MapReduce daemons: the JobTracker is stopped on <code>master</code>, and TaskTracker daemons are
+stopped on all slaves (here: <code>master</code> and <code>slave</code>).</li>
+  <li>Then we stop the HDFS daemons: the NameNode daemon is stopped on <code>master</code>, and DataNode daemons are stopped on all
+slaves (here: <code>master</code> and <code>slave</code>).</li>
+</ol>
+
+<h3 id="mapreduce-daemons-1">MapReduce daemons</h3>
+
+<p>Run the command <code>bin/stop-mapred.sh</code> on the JobTracker machine.  This will shut down the MapReduce cluster by
+stopping the JobTracker daemon running on the machine you ran the previous command on, and TaskTrackers on the machines
+listed in the <code>conf/slaves</code> file.</p>
+
+<p>In our case, we will run <code>bin/stop-mapred.sh</code> on <code>master</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Stopping the MapReduce layer  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/stop-mapred.sh
+</span><span class="line">stopping jobtracker
+</span><span class="line">slave: Ubuntu 10.04
+</span><span class="line">master: stopping tasktracker
+</span><span class="line">slave: stopping tasktracker
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<div class="note">
+Note: The output above might suggest that the JobTracker was running and
+ stopped on “slave“, but you can be assured that the JobTracker ran on 
+“master“.
+</div>
+
+<p>At this point, the following Java processes should run on <code>master</code>…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on master after stopping MapReduce daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">14799 NameNode
+</span><span class="line">18386 Jps
+</span><span class="line">14880 DataNode
+</span><span class="line">14977 SecondaryNameNode
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>…and the following on <code>slave</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on slave after stopping MapReduce daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@slave:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">15183 DataNode
+</span><span class="line">18636 Jps
+</span><span class="line">hduser@slave:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h3 id="hdfs-daemons-1">HDFS daemons</h3>
+
+<p>Run the command <code>bin/stop-dfs.sh</code> on the NameNode machine.  This will shut down HDFS by stopping the NameNode daemon
+running on the machine you ran the previous command on, and DataNodes on the machines listed in the <code>conf/slaves</code>
+file.</p>
+
+<p>In our case, we will run <code>bin/stop-dfs.sh</code> on <code>master</code>:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Stopping the HDFS layer  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/stop-dfs.sh
+</span><span class="line">stopping namenode
+</span><span class="line">slave: Ubuntu 10.04
+</span><span class="line">slave: stopping datanode
+</span><span class="line">master: stopping datanode
+</span><span class="line">master: stopping secondarynamenode
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>(again, the output above might suggest that the NameNode was running and stopped on <code>slave</code>, but you can be assured that the NameNode ran on <code>master</code>)</p>
+
+<p>At this point, the only following Java processes should run on <code>master</code>…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on master after stopping HDFS daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">18670 Jps
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>…and the following on <code>slave</code>.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Java processes on slave after stopping HDFS daemons  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@slave:/usr/local/hadoop<span class="nv">$ </span>jps
+</span><span class="line">18894 Jps
+</span><span class="line">hduser@slave:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h2 id="running-a-mapreduce-job">Running a MapReduce job</h2>
+
+<p>Just follow the steps described in the section
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/#Running%20a%20MapReduce%20job">Running a MapReduce job</a> of
+the <a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">single-node cluster tutorial</a>.</p>
+
+<p>I recommend however that you use a larger set of input data so that Hadoop will start several Map and Reduce tasks, and
+in particular, on <em>both</em> <code>master</code> and <code>slave</code>.  After all this installation and configuration work, we want to see
+the job processed by all machines in the cluster, don’t we?</p>
+
+<p>Here’s the example input data I have used for the multi-node cluster setup described in this tutorial.  I added four
+more Project Gutenberg etexts to the initial
+<a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/#Download%20example%20input%20data">three documents</a> mentioned
+in the single-node cluster tutorial.  All etexts should be in plain text us-ascii encoding.</p>
+
+<ul>
+  <li><a href="http://www.gutenberg.org/etext/20417">The Outline of Science, Vol. 1 (of 4) by J. Arthur Thomson</a></li>
+  <li><a href="http://www.gutenberg.org/etext/5000">The Notebooks of Leonardo Da Vinci</a></li>
+  <li><a href="http://www.gutenberg.org/etext/4300">Ulysses by James Joyce</a></li>
+  <li><a href="http://www.gutenberg.org/etext/132">The Art of War by 6th cent. B.C. Sunzi</a></li>
+  <li><a href="http://www.gutenberg.org/etext/1661">The Adventures of Sherlock Holmes by Sir Arthur Conan Doyle</a></li>
+  <li><a href="http://www.gutenberg.org/etext/972">The Devil’s Dictionary by Ambrose Bierce</a></li>
+  <li><a href="http://www.gutenberg.org/etext/19699">Encyclopaedia Britannica, 11th Edition, Volume 4, Part 3</a></li>
+</ul>
+
+<p>Download these etexts, copy them to HDFS, run the WordCount example MapReduce job on <code>master</code>, and retrieve the job
+result from HDFS to your local filesystem.</p>
+
+<p>Here’s the example output on <code>master</code>… after executing the MapReduce job…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"> <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">hduser@master:/usr/local/hadoop<span class="nv">$ </span>bin/hadoop jar hadoop*examples*.jar wordcount  /user/hduser/gutenberg /user/hduser/gutenberg-output
+</span><span class="line">... INFO mapred.FileInputFormat: Total input paths to process : 7
+</span><span class="line">... INFO mapred.JobClient: Running job: job_0001
+</span><span class="line">... INFO mapred.JobClient:  map 0% reduce 0%
+</span><span class="line">... INFO mapred.JobClient:  map 28% reduce 0%
+</span><span class="line">... INFO mapred.JobClient:  map 57% reduce 0%
+</span><span class="line">... INFO mapred.JobClient:  map 71% reduce 0%
+</span><span class="line">... INFO mapred.JobClient:  map 100% reduce 9%
+</span><span class="line">... INFO mapred.JobClient:  map 100% reduce 68%
+</span><span class="line">... INFO mapred.JobClient:  map 100% reduce 100%
+</span><span class="line">.... INFO mapred.JobClient: Job <span class="nb">complete</span>: job_0001
+</span><span class="line">... INFO mapred.JobClient: Counters: 11
+</span><span class="line">... INFO mapred.JobClient:   org.apache.hadoop.examples.WordCount<span class="nv">$Counter</span>
+</span><span class="line">... INFO mapred.JobClient:     <span class="nv">WORDS</span><span class="o">=</span>1173099
+</span><span class="line">... INFO mapred.JobClient:     <span class="nv">VALUES</span><span class="o">=</span>1368295
+</span><span class="line">... INFO mapred.JobClient:   Map-Reduce Framework
+</span><span class="line">... INFO mapred.JobClient:     Map input <span class="nv">records</span><span class="o">=</span>136582
+</span><span class="line">... INFO mapred.JobClient:     Map output <span class="nv">records</span><span class="o">=</span>1173099
+</span><span class="line">... INFO mapred.JobClient:     Map input <span class="nv">bytes</span><span class="o">=</span>6925391
+</span><span class="line">... INFO mapred.JobClient:     Map output <span class="nv">bytes</span><span class="o">=</span>11403568
+</span><span class="line">... INFO mapred.JobClient:     Combine input <span class="nv">records</span><span class="o">=</span>1173099
+</span><span class="line">... INFO mapred.JobClient:     Combine output <span class="nv">records</span><span class="o">=</span>195196
+</span><span class="line">... INFO mapred.JobClient:     Reduce input <span class="nv">groups</span><span class="o">=</span>131275
+</span><span class="line">... INFO mapred.JobClient:     Reduce input <span class="nv">records</span><span class="o">=</span>195196
+</span><span class="line">... INFO mapred.JobClient:     Reduce output <span class="nv">records</span><span class="o">=</span>131275
+</span><span class="line">hduser@master:/usr/local/hadoop<span class="err">$</span>
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>…and the logging output on <code>slave</code> for its DataNode daemon…</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>logs/hadoop-hduser-datanode-slave.log (on slave)  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Received block blk_5693969390309798974 from  /192.168.0.1
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Received block blk_7671491277162757352 from /192.168.0.1
+</span><span class="line">&lt;snipp&gt;
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Served block blk_-7112133651100166921 to /192.168.0.2
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Served block blk_-7545080504225510279 to /192.168.0.2
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Served block blk_-4114464184254609514 to /192.168.0.2
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Served block blk_-4561652742730019659 to /192.168.0.2
+</span><span class="line">&lt;snipp&gt;
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Received block blk_-2075170214887808716 from /192.168.0.2 and mirrored to /192.168.0.1:50010
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Received block blk_1422409522782401364 from /192.168.0.2 and mirrored to /192.168.0.1:50010
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Deleting block blk_-2942401177672711226 file /app/hadoop/tmp/dfs/data/current/blk_-2942401177672711226
+</span><span class="line">... INFO org.apache.hadoop.dfs.DataNode: Deleting block blk_-3019298164878756077 file /app/hadoop/tmp/dfs/data/current/blk_-3019298164878756077
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>…and on <code>slave</code> for its TaskTracker daemon.</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>logs/hadoop-hduser-tasktracker-slave.log (on slave)  </span></figcaption>
+ <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+<span class="line-number">10</span>
+<span class="line-number">11</span>
+<span class="line-number">12</span>
+<span class="line-number">13</span>
+<span class="line-number">14</span>
+<span class="line-number">15</span>
+<span class="line-number">16</span>
+<span class="line-number">17</span>
+<span class="line-number">18</span>
+<span class="line-number">19</span>
+<span class="line-number">20</span>
+<span class="line-number">21</span>
+<span class="line-number">22</span>
+<span class="line-number">23</span>
+<span class="line-number">24</span>
+<span class="line-number">25</span>
+<span class="line-number">26</span>
+<span class="line-number">27</span>
+<span class="line-number">28</span>
+<span class="line-number">29</span>
+</pre></td><td class="code"><pre><code class="bash"><span class="line">... INFO org.apache.hadoop.mapred.TaskTracker: LaunchTaskAction: task_0001_m_000000_0
+</span><span class="line">... INFO org.apache.hadoop.mapred.TaskTracker: LaunchTaskAction: task_0001_m_000001_0
+</span><span class="line">... task_0001_m_000001_0 0.08362164% hdfs://master:54310/user/hduser/gutenberg/ulyss12.txt:0+1561677
+</span><span class="line">... task_0001_m_000000_0 0.07951202% hdfs://master:54310/user/hduser/gutenberg/19699.txt:0+1945731
+</span><span class="line">&lt;snipp&gt;
+</span><span class="line">... task_0001_m_000001_0 0.35611463% hdfs://master:54310/user/hduser/gutenberg/ulyss12.txt:0+1561677
+</span><span class="line">... Task task_0001_m_000001_0 is <span class="k">done</span>.
+</span><span class="line">... task_0001_m_000000_0 1.0% hdfs://master:54310/user/hduser/gutenberg/19699.txt:0+1945731
+</span><span class="line">... LaunchTaskAction: task_0001_m_000006_0
+</span><span class="line">... LaunchTaskAction: task_0001_r_000000_0
+</span><span class="line">... task_0001_m_000000_0 1.0% hdfs://master:54310/user/hduser/gutenberg/19699.txt:0+1945731
+</span><span class="line">... Task task_0001_m_000000_0 is <span class="k">done</span>.
+</span><span class="line">... task_0001_m_000006_0 0.6844295% hdfs://master:54310/user/hduser/gutenberg/132.txt:0+343695
+</span><span class="line">... task_0001_r_000000_0 0.095238104% reduce &gt; copy <span class="o">(</span>2 of 7 at 1.68 MB/s<span class="o">)</span> &gt;
+</span><span class="line">... task_0001_m_000006_0 1.0% hdfs://master:54310/user/hduser/gutenberg/132.txt:0+343695
+</span><span class="line">... Task task_0001_m_000006_0 is <span class="k">done</span>.
+</span><span class="line">... task_0001_r_000000_0 0.14285716% reduce &gt; copy <span class="o">(</span>3 of 7 at 1.02 MB/s<span class="o">)</span> &gt;
+</span><span class="line">&lt;snipp&gt;
+</span><span class="line">... task_0001_r_000000_0 0.14285716% reduce &gt; copy <span class="o">(</span>3 of 7 at 1.02 MB/s<span class="o">)</span> &gt;
+</span><span class="line">... task_0001_r_000000_0 0.23809525% reduce &gt; copy <span class="o">(</span>5 of 7 at 0.32 MB/s<span class="o">)</span> &gt;
+</span><span class="line">... task_0001_r_000000_0 0.6859089% reduce &gt; reduce
+</span><span class="line">... task_0001_r_000000_0 0.7897389% reduce &gt; reduce
+</span><span class="line">... task_0001_r_000000_0 0.86783284% reduce &gt; reduce
+</span><span class="line">... Task task_0001_r_000000_0 is <span class="k">done</span>.
+</span><span class="line">... Received <span class="s1">'KillJobAction'</span> <span class="k">for </span>job: job_0001
+</span><span class="line">... task_0001_r_000000_0 <span class="k">done</span>; removing files.
+</span><span class="line">... task_0001_m_000000_0 <span class="k">done</span>; removing files.
+</span><span class="line">... task_0001_m_000006_0 <span class="k">done</span>; removing files.
+</span><span class="line">... task_0001_m_000001_0 <span class="k">done</span>; removing files.
+</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>If you want to inspect the job’s output data, you need to retrieve the job results from HDFS to your local file system
+(see instructions in the <a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">single-node cluster tutorial</a>.</p>
+
+<h1 id="caveats">Caveats</h1>
+
+<h2 id="javaioioexception-incompatible-namespaceids">java.io.IOException: Incompatible namespaceIDs</h2>
+
+<p>If you observe the error “java.io.IOException: Incompatible namespaceIDs” in the logs of a DataNode
+(<code>logs/hadoop-hduser-datanode-.log</code>), chances are you are affected by issue
+<a href="https://issues.apache.org/jira/browse/HDFS-107">HDFS-107</a> (formerly known as
+<a href="http://issues.apache.org/jira/browse/HADOOP-1212">HADOOP-1212</a>).</p>
+
+<p>The full error looked like this on my machines:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+<span class="line-number">8</span>
+<span class="line-number">9</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">  ... ERROR org.apache.hadoop.dfs.DataNode: java.io.IOException: Incompatible namespaceIDs in /app/hadoop/tmp/dfs/data: namenode namespaceID = 308967713; datanode namespaceID = 113030094
+</span><span class="line">        at org.apache.hadoop.dfs.DataStorage.doTransition(DataStorage.java:281)
+</span><span class="line">        at org.apache.hadoop.dfs.DataStorage.recoverTransitionRead(DataStorage.java:121)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.startDataNode(DataNode.java:230)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.(DataNode.java:199)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.makeInstance(DataNode.java:1202)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.run(DataNode.java:1146)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.createDataNode(DataNode.java:1167)
+</span><span class="line">        at org.apache.hadoop.dfs.DataNode.main(DataNode.java:1326)</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<p>There are basically two solutions to fix this error as I will describe below.</p>
+
+<h3 id="solution-1-start-from-scratch">Solution 1: Start from scratch</h3>
+
+<p>This step fixes the problem at the cost of erasing all existing data in the cluster’s HDFS file system.</p>
+
+<ol>
+  <li>Stop the full cluster, i.e. both MapReduce and HDFS layers.</li>
+  <li>Delete the data directory on the problematic DataNode: the directory is specified by <code>dfs.data.dir</code> in
+<code>conf/hdfs-site.xml</code>; if you followed this tutorial, the relevant directory is <code>/app/hadoop/tmp/dfs/data</code>.</li>
+  <li>Reformat the NameNode.  <strong>WARNING: all HDFS data is lost during this process!</strong></li>
+  <li>Restart the cluster.</li>
+</ol>
+
+<p>When deleting all the HDFS data and starting from scratch does not sound like a good idea (it might be ok during the
+initial setup/testing), you might give the second approach a try.</p>
+
+<h3 id="solution-2-manually-update-the-namespaceid-of-problematic-datanodes">Solution 2: Manually update the namespaceID of problematic DataNodes</h3>
+
+<p>Big thanks to Jared Stehler for the following suggestion.  This workaround is “minimally invasive” as you only have to
+edit a single file on the problematic DataNodes:</p>
+
+<ol>
+  <li>Stop the problematic DataNode(s).</li>
+  <li>Edit the value of <code>namespaceID</code> in <code>${dfs.data.dir}/current/VERSION</code> to match the corresponding value of the
+current NameNode in <code>${dfs.name.dir}/current/VERSION</code>.</li>
+  <li>Restart the fixed DataNode(s).</li>
+</ol>
+
+<p>If you followed the instructions in my tutorials, the full paths of the relevant files are:</p>
+
+<ul>
+  <li>NameNode: <tt>/app/hadoop/tmp/dfs/<span style="color: red;">name</span>/current/VERSION</tt></li>
+  <li>DataNode: <tt>/app/hadoop/tmp/dfs/<span style="color: red;">data</span>/current/VERSION</tt> (background:
+<code>dfs.data.dir</code> is by default set to <code>${hadoop.tmp.dir}/dfs/data</code>, and we set <code>hadoop.tmp.dir</code> in this tutorial
+to <code>/app/hadoop/tmp</code>).</li>
+</ul>
+
+<p>If you wonder how the contents of <code>VERSION</code> look like, here’s one of mine:</p>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>contents of current/VERSION </span></figcaption>
+<div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">namespaceID=393514426
+</span><span class="line">storageID=DS-1706792599-10.10.10.1-50010-1204306713481
+</span><span class="line">cTime=1215607609074
+</span><span class="line">storageType=DATA_NODE
+</span><span class="line">layoutVersion=-13</span></code></pre></td></tr></tbody></table></div></figure></notextile></div>
+
+<h1 id="where-to-go-from-here">Where to go from here</h1>
+
+<p>If you’re feeling comfortable, you can continue your Hadoop experience with my tutorial on
+<a href="http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/">how to code a simple MapReduce job</a> in the Python
+programming language which can serve as the basis for writing your own MapReduce programs.</p>
+
+<h1 id="related-links">Related Links</h1>
+
+<p>From yours truly:</p>
+
+<ul>
+  <li><a href="http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-single-node-cluster/">Running Hadoop On Ubuntu Linux (Single-Node Cluster)</a></li>
+  <li><a href="http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/">Writing An Hadoop MapReduce Program In Python</a></li>
+  <li><a href="http://www.michael-noll.com/blog/2011/04/09/benchmarking-and-stress-testing-an-hadoop-cluster-with-terasort-testdfsio-nnbench-mrbench/">Benchmarking and Stress Testing an Hadoop Cluster with TeraSort, TestDFSIO &amp; Co.</a></li>
+</ul>
+
+<p>From other people:</p>
+
+<ul>
+  <li><a href="http://wiki.apache.org/hadoop/HowToDebugMapReducePrograms">How to debug MapReduce programs</a></li>
+  <li><a href="http://hadoop.apache.org/core/docs/current/api/overview-summary.html">Hadoop API Overview</a> (Hadoop 2.x)</li>
+  <li><a href="https://issues.apache.org/jira/browse/HDFS-107">Bug HDFS-107: DataNodes should be formatted when the NameNode is formatted</a></li>
+  <li><a href="https://issues.apache.org/jira/browse/MAPREDUCE-63">Bug MAPREDUCE-63: TaskTracker falls into an infinite loop</a> during
+<code>reduce &gt; copy</code> step</li>
+</ul>
+
+<h1 id="change-log">Change Log</h1>
+
+<p>Only major changes are listed here.</p>
+
+<ul>
+  <li>2011-07-17: Renamed the Hadoop user from <code>hadoop</code> to <code>hduser</code> based on readers’ feedback.  This should make the
+distinction between the local Hadoop user (now <code>hduser</code>), the local Hadoop group (<code>hadoop</code>), and the Hadoop CLI
+tool (<code>hadoop</code>) more clear.</li>
+</ul>
+
+</div>
+  
+    <footer>
+      
+      
+        <div class="sharing">
+  
+  <iframe style="width: 108px; height: 20px;" data-twttr-rendered="true" title="Twitter Tweet Button" class="twitter-share-button twitter-tweet-button twitter-count-horizontal" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/tweet_button.html" allowtransparency="true" id="twitter-widget-0" frameborder="0" scrolling="no"></iframe>
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><iframe verticalscrolling="no" horizontalscrolling="no" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/a.html" style="width: 100% ! important; border: medium none ! important; overflow: hidden ! important; height: 11900px ! important;" role="complementary" allowtransparency="true" data-disqus-uid="2" id="dsq-2" frameborder="0" scrolling="no" width="100%"></iframe><iframe style="width: 789px ! important; border: medium none ! important; overflow: hidden ! important; top: 0px ! important; position: fixed ! important; height: 29px ! important; display: none ! important;" role="alert" allowtransparency="true" data-disqus-uid="indicator-north" id="dsq-indicator-north" frameborder="0" scrolling="no"></iframe><iframe style="width: 789px ! important; border: medium none ! important; overflow: hidden ! important; bottom: 0px ! important; position: fixed ! important; height: 29px ! important; display: none ! important;" role="alert" allowtransparency="true" data-disqus-uid="indicator-south" id="dsq-indicator-south" frameborder="0" scrolling="no"></iframe></div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>About Me</h1>
+  <p>
+  <img src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/miguno-portrait.png" style="float: left; margin: 0 10px 5px 0;" height="50" width="50">
+  I am a researcher and software engineer based in Switzerland, Europe.  I work for the .COM and .NET DNS registry
+  operator <a href="http://www.verisigninc.com/">Verisign</a> as the technical lead of its large-scale computing
+  infrastructure based on the Apache Hadoop stack and as a research affiliate at
+  <a href="http://www.verisignlabs.com/">Verisign Labs</a>.  <a href="http://www.michael-noll.com/about/">Read more »</a>
+  </p>
+</section>
+<section>
+  <h1>Contact</h1>
+  <p>
+    <i class="icon-envelope"></i>
+    <a target="_blank" id="obfuscated-contact" href="mailto:michael@michael-noll.com">michael@michael-noll.com</a>
+
+    <script type="text/javascript">
+        /*
+        Derived from https://gist.github.com/961154
+
+        1) Obfuscate the e-mail address that appears on the page by adding garbage-filled, invisible <span>s inside
+           the e-mail address.  This is an effective method of hiding an e-mail address from spam bots/harvesters;
+           see here: http://techblog.tilllate.com/2008/07/20/ten-methods-to-obfuscate-e-mail-addresses-compared
+
+        2) Use a reCAPTCHA Mailhide URL as a fallback destination if JavaScript is disabled; the user will eventually
+           see a mailto: link after passing a CAPTCHA.
+        */
+        $(document).ready(function(){
+            //First, remove the invisible <span>s from the link - now the plain-text e-mail address is in the DOM
+            $("#obfuscated-contact span").remove();
+
+            //Next, set the link's href attribute to be 'mailto:' plus the link text (the plain-text e-mail address from
+            // the previous step.) Now we have an instant simple mailto: link, except spam bots can't harvest it.
+            $("#obfuscated-contact").attr("href", "mailto:" + $.trim($("#obfuscated-contact").text()));
+      });
+    </script>
+  </p>
+
+  <h1>Follow Me</h1>
+  <p>
+      <a class="btn btn-small btn-aside" href="https://twitter.com/miguno"><i class="icon-twitter"></i> @miguno</a><br>
+      <a class="btn btn-small btn-aside" href="http://feeds.feedburner.com/michael-noll"><i class="icon-rss"></i> Blog RSS</a><br>
+      <a class="btn btn-small btn-aside" href="https://github.com/miguno"><i class="icon-github"></i> GitHub</a><br>
+  </p>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="http://www.michael-noll.com/blog/2013/11/06/sending-metrics-from-storm-to-graphite/">Sending Metrics from Storm to Graphite</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://www.michael-noll.com/blog/2013/09/17/replephant-analyzing-hadoop-cluster-usage-with-clojure/">Replephant: Analyzing Hadoop Cluster Usage with Clojure</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://www.michael-noll.com/blog/2013/07/04/using-avro-in-mapreduce-jobs-with-hadoop-pig-hive/">Using Avro in MapReduce jobs with Hadoop, Pig, Hive</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://www.michael-noll.com/blog/2013/06/21/understanding-storm-internal-message-buffers/">Understanding the Internal Message Buffers of Storm</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://www.michael-noll.com/blog/2013/06/06/installing-and-running-graphite-via-rpm-and-supervisord/">Installing and Running Graphite via RPM and Supervisord</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+
+  <!-- lazily load tweets; derived from http://decodize.com/html/moving-from-wordpress-to-octopress/ -->
+  <script type="text/javascript">
+    (function(w, d, s) {
+      function go(){
+        var js, fjs = d.getElementsByTagName(s)[0], load = function(url, id) {
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s);
+            js.src = url;
+            js.id = id;
+            js.async = true;
+            $(js).load(function(){
+                getTwitterFeed("miguno", 4, false);
+            });
+            fjs.parentNode.insertBefore(js, fjs);
+        };
+        load('/javascripts/twitter.js', 'recentTweets');
+      }
+      if (w.addEventListener) { w.addEventListener("load", go, false); }
+      else if (w.attachEvent) { w.attachEvent("onload", go); }
+    }(window, document, 'script'));
+  </script>
+
+  <script src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/twitter.js" type="text/javascript"> </script>
+  
+    <iframe style="width: 115px; height: 20px;" data-twttr-rendered="true" title="Twitter Follow Button" class="twitter-follow-button twitter-follow-button" src="Running%20Hadoop%20On%20Ubuntu%20Linux%20%28Multi-Node%20Cluster%29%20-%20Michael%20G.%20Noll_files/follow_button.html" allowtransparency="true" id="twitter-widget-1" frameborder="0" scrolling="no"></iframe>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright © 2004-2013
+  <a href="http://www.michael-noll.com/about/">Michael G. Noll</a>.
+  All rights reserved.  Views expressed here are my own.
+  <a href="http://www.michael-noll.com/privacy/">Privacy Policy</a>.
+  <span class="credit">Powered by <a href="http://octopress.org/">Octopress</a>.</span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'miguno';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-multi-node-cluster/';
+        var disqus_url = 'http://www.michael-noll.com/tutorials/running-hadoop-on-ubuntu-linux-multi-node-cluster/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+  <script type="text/javascript">
+  jQuery(document).ready(function() {
+    // Put a TOC right before the entry content.
+    generateTOC('.entry-content', 'Table of Contents');
+  });
+  </script>
+
+
+
+
+
+</body></html>
