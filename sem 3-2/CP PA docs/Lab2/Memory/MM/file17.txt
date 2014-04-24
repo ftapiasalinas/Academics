@@ -1,0 +1,4 @@
+8
+9.08
+Line count of HD/file3.txt
+6

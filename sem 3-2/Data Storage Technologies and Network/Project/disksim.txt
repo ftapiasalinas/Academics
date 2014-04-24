@@ -1,0 +1,64 @@
+install disksim:
+1. Extract the code
+2. make
+3. valid/runvalid will run the tests (no error then working)
+
+
+DiskSim requires five command line arguments and optionally accepts some number of parameter
+overrides:
+disksim <parfile> <outfile> <tracetype> <tracefile> <synthgen> [ par override
+... ]
+where:
+• disksim is the name of the executable.
+• parfile is the name of the parameter file (whose format is described in chapter 3).
+• outfile is the name of the output file (whose format is described in chapter 5). Output can
+be directed to stdout by specifying “stdout” for this argument.
+• tracetype identifies the format of the trace input, if any (options are described in chapter C).
+• tracefile identifies the trace file to be used as input. Input is taken from stdin when “stdin”
+is specified for this argument.
+• synthgen determines whether or not the synthetic workload generation portion of the sim-
+ulator should be enabled (any value other than “0” enables synthetic workload generation).
+The synthetic generator(s) are configured by values in the parameter file, as described in
+chapter C. Currently, DiskSim cannot use both an input trace and an internally-generated
+synthetic workload at the same time.
+• par override allows default parameter values or parameter values from parfile to be
+replaced by values specified in the command line. 
+
+
+
+Each parameter override is described by a (component, param name, param value) triple:
+<component> <parameter> <new value>
+1. component is the name of a component whose parameters are to be overridden. This is
+the name given to the component when it is instantiated in the parameter file. Ranges are
+supported; for example disk0 .. disk5 indicates 6 disks “disk0” through “disk5.” Wild-
+cards are also supported; a trailing * matches any string of digits. For example driver*
+matches driver2, driver and driver2344 but not driverqux.5
+2. parameter is a string identifying the parameter to be overridden. This is identical to the
+variable name used in the parameter file. If the name contains spaces, it must be quoted so
+that the shell will pass it to DiskSim as a single argument. To reference a parameter of a
+subcomponent such as a disk’s scheduler, use the form Scheduler:parameter
+3. new value is the new value for the parameter for the specified instances of the specified
+module.
+
+
+Example Command Line
+An example may be useful to demonstrate the command line syntax. The following command:
+disksim parms.1B stdout ascii t.Jan6 0 "disk1 .. disk16" "Segment size (in
+blks)" 64 "disk*" "Scheduler:Scheduling policy" 4
+executes DiskSim as follows:
+• initial parameters are read from file parms.1B;
+• output (e.g., statistics) is sent to stdout;
+• the ascii input trace is read from file t.Jan6;
+• there is no synthetically generated activity;
+• the cache segment size parameter values of disks 1 through 16, as specified in the parameter
+file (parms.1B), are overridden with a value of 64 (sectors); and
+• the scheduling algorithm parameter value for all components matching “disk*” is overridden
+with a value of 4 (which corresponds to a Shortest-Seek-Time-First algorithm).
+
+to simulate:
+
+cd ~/disksim4.0
+src/disksim valid/3disks.parv ~/outputfile 0 1 "disk*" "Scheduler:Scheduling policy" 14 // 14 is found in src/disksim_ioqueue.h file ( ASPTF_OPT 14 )
+
+it will simulate and give the performance paremeters values in outputfile and you are done..!!! 
+

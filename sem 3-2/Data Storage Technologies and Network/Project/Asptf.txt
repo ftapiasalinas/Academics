@@ -1,0 +1,25 @@
+Shortest positioning time first (SPTF)
+SPTF example
+• Shortest positioning time first (SPTF)
+    - Always pick request with shortest seek time
+• Advantages
+    - Exploits locality of disk requests
+    - Higher throughput
+• Disadvantages
+    - Starvation
+    - Don’t always know what request will be fastest
+
+• Improvement: Aged SPTF
+ASPTF  - Aged Shortest Positioning time first
+As the name suggests it goes for the operation in which there is least time involved in positioning the head on
+the disk target location.
+
+
+- Give older requests higher priority
+- Adjust “effective” seek time with weighting factor:
+Teff = Tpos − W · Twait
+• Also called Aged Shortest Seek Time First (ASSTF)
+
+
+
+

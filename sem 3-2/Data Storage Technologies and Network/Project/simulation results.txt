@@ -1,0 +1,10 @@
+The main difference between BTRFS,XFS and EXT4 is that BTRFS uses COWed-Btree to write while other two are overwrite based file systems.
+So ,We simulated or implemented the fundamental operations of BTRFS and compared the write time of the file systems.
+            BTRFS           XFS,EXT4
+Write       1865486ns       5352ns
+Read            both are equal
+
+The paper is basically on the architecture of BTRFS . Thus we majorly concenterated on implementation.
+--Thanking You
+Sahil Mittal
+Ashu Kalra
