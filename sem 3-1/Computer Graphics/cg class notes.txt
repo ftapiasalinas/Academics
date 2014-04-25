@@ -1,0 +1,81 @@
+set orto2d(0,250,0,250);
+now if u place 0,0 point
+u will see the right semi circle..
+
+now 
+set orto2d(-250,250,-250,250)
+
+word co ordiante system.
+one u have the dimension ready then u put in on the screenn.
+for that a transformation is required.
+
+whatever we represent on the screen ..
+there is a 1:1 buffer for that..
+
+draw a line..
+u need to specify the max value of x,y,z ..
+that gives us the bound..
+
+info in teh buffer...
+1. depth info 
+	certain parts needs to be eliminated or not..
+
+2. color info
+
+
+2-d transformation
+
+suppose set orto2d(0,250,0,250)
+
+draw a square of 0,0,100,100
+now we can use translation 
+glTransaltef(tx,ty,tz);
+0.0 is the z parameter
+
+w.r.t to origin
+
+change orto2d(-250,250,-250,250)
+and observe the results.
+
+stripped lines:
+void glLineStipple(GLint factor,Glushort pattern);
+glEnable(GL_LINE_STIPPLE)
+pattern example is 0xf0f0
+sometimes the pattern is not taken from LSB so please check it!!
+
+the pattern is from the right as understood in class.
+
+
+glBitmap(width height,xo,yo,xofact,yofact,bit shape)
+
+list can start in reverse direction.
+when u represent the bitmap as 16 bits..
+so u need to have info about unpacking of the info..
+that info is stored in some 2 functions..
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
