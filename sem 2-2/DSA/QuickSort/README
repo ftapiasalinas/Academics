@@ -1,0 +1,13 @@
+Just run "./qsortimes.sh 100 10 10 100"
+If it fails to execute for permissions, try "chmod a+x qsortimes.sh" first before trying to run it
+Or else just run "bash qsortimes.sh 100 10 10 100"
+
+If you are ready to wait longer and see statistically reliable results,
+then repeat the experiment with 100000 repetitions for sizes 100 to 1000 with step 100:
+"./qsortimes 100000 100 100 1000"
+It will give a warning and you will have to confirm with a "Y" before continuing.
+
+Examine the pdfs generated at the end. histogram4n*.pdf files give you an idea of how the average
+and best cases span in relation to the worse cases. runtime.pdf is the actual behavior of the
+runtimes with increasing sizes.
+

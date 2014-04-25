@@ -1,0 +1,166 @@
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Msftedit 5.41.21.2509;}\viewkind4\uc1\pard\sa200\sl276\slmult1\lang9\f0\fs22\par
+Serializability\par
+\par
+Sections:\par
+1. ACID properties\par
+2. Schedules\par
+3. Conflict serializability\par
+   3.1. Definition\par
+   3.2. Testing for conflict-serializability\par
+1. ACID properties\par
+\par
+We think of the database as executing transactions: Sequences of operations that are packaged together, that must be executed as a whole. We want the DBMS to provide four properties, called the ACID properties:\par
+\par
+A. Atomicity\par
+\par
+    Either all operations of the transaction complete, or none of them do. We're particularly want to avoid a transaction transaction that changes some of the entries that it wants but the DBMS fails before changing all of the entries.\par
+C. Consistency\par
+\par
+    The information in the database must be kept in a consistent state. This is largely the responsibility of the database administrator writing the queries, but the DBMS is also sometimes responsible: For example, if we have one table B that includes keys from another table A (such as bank account transactions that have account IDs referencing rows in a table of bank accounts), then the DBMS shouldn't allow deleting a row from A without deleting those rows from B referring to the account being deleted.\par
+I. Isolation\par
+\par
+    The transactions shouldn't have some complex interplay between each other: Conceptually, transactions should have the same effect as if they were done one a a time (though in fact the DBMS will need to do them concurrently).\par
+D. Durability\par
+\par
+    If the DBMS reports that it successfully completed a transaction, then all effects of that transaction should be permanent \emdash  even if the DBMS crashes (maybe due to a power outage) immediately after the transaction completes.\par
+\par
+For the moment, we'll concentrate on isolation.\par
+2. Schedules\par
+\par
+Consider the following two transactions for a bank: The first is meant to deduct $100 from an account, while the second adds 0.5% interest to every account in the bank.\par
+\par
+    Transaction 1 \tab     \tab Transaction 2\par
+    UPDATE accounts\par
+    SET balance = balance - 100\par
+    WHERE acct_id = 31414 \tab\tab UPDATE accounts\par
+    SET balance = balance * 1.005 \par
+\par
+We'll want to talk about these transactions in the abstract. We'll summarize their interactions with the DBMS in the following form:\par
+\par
+    Transaction 1:\tab r1(A), w1(A)\par
+    Transaction 2:\tab r2(A), w2(A), r2(B), w2(B) \par
+\par
+The notation ri(X) indicates that transaction i reads the value for database element X, and ri(X) indicates that transaction i writes a new value for database element X. [We're being intentionally vague about what is meant by "database element." You can think of it as being one row of a table, but a DBMS might think in terms of each individual cell in the table being an element, or it might think of the entire table as being an element. It might group several rows together into just one element.]\par
+\par
+A schedule is some interleaving of the operations from the two transactions (without violating the order of operations within any individual transaction). So we can meaningfully ask: What is the outcome of the following order of operations:\par
+\par
+    Schedule S: r1(A), r2(A), w1(A), w2(A), r2(B), w2(B) \par
+\par
+If account A starts with $200, and account B starts with $100, we can trace what would happen with Schedule S.\par
+\par
+    \tab A \tab B\par
+    (initial:) \tab 200.00\tab 100.00\par
+    r1(A): \tab\tab\par
+    r2(A): \tab\tab\par
+    w1(A): \tab 100.00\tab\par
+    w2(A): \tab 201.00\tab\par
+    r2(B): \tab\tab\par
+    w2(B): \tab\tab 100.50\par
+\par
+Schedule S is very bad! (At least, it's bad if you're the bank!) We withdrew $100 from account A, but somehow the database has recorded that our account now holds $201.\par
+\par
+What's a good schedule look like? Well, our ideal is a serial schedule, in which all operations by a transaction are grouped together. For our two transactions, there are only two ways to arrange their operations to get a serial schedule:\par
+\par
+    Serial schedule 1:\tab r1(A), w1(A), r2(A), w2(A), r2(B), w2(B)\par
+    Serial schedule 2:\tab r2(A), w2(A), r2(B), w2(B), r1(A), w1(A) \par
+\par
+In practice, a serial schedule isn't realistic, because it means we must wait for one transaction to complete before starting another. We would really prefer to interleave them \emdash  but we need to interleave the transactions so that they work the same as some serial schedule.\par
+\par
+We call a schedule serializable if it has the same effect as some serial schedule regardless of the specific information in the database. That last clause "\'85regardless of the specific information\'85" comes from peculiarities that may arise based on precisely what the database contains. As an example, consider Schedule T, which has swapped the third and fourth operations from S:\par
+\par
+    Schedule T: r1(A), r2(A), w2(A), w1(A), r2(B), w2(B) \par
+\par
+We can try tracing this on two different examples.\par
+\par
+    A is $100 initially \tab\tab A is $200 initially\par
+    \tab A \tab B\par
+    (initial:) \tab 100.00\tab 100.00\par
+    r1(A): \tab\tab\par
+    r2(A): \tab\tab\par
+    w2(A): \tab 100.50\tab\par
+    w1(A): \tab 0.00\tab\par
+    r2(B): \tab\tab\par
+    w2(B): \tab\tab 100.50\par
+    \tab    \tab\par
+    \tab A \tab B\par
+    (initial:) \tab 200.00\tab 100.00\par
+    r1(A): \tab\tab\par
+    r2(A): \tab\tab\par
+    w2(A): \tab 201.00\tab\par
+    w1(A): \tab 100.00\tab\par
+    r2(B): \tab\tab\par
+    w2(B): \tab\tab 100.50\par
+\par
+Looking just at the first example, we see that the outcome is the same as the serial schedule where the withdrawal happens first and then the interest is credited. But that's just a peculiarity of the data, as revealed by the second example, where the final value of A can't be the consequence of either of the possible serial schedules.\par
+\par
+So neither S nor T are serializable. What's a non-serial example of a serializable schedule? We could credit interest to A first, then withdraw the money, then credit interest to B:\par
+\par
+    Schedule U: r2(A), w2(A), r1(A), w1(A), r2(B), w2(B) \par
+\par
+3. Conflict serializability\par
+\par
+Our definition of serializability is a bit difficult to handle: How can we test for the same effect regardless of data? To come up with an answer, we'll create a stricter definition of serializability, called conflict-serializability.\par
+3.1. Definition\par
+\par
+First, though, we'll define conflict-equivalence: Two schedules are conflict-equivalent if one can be reached from the other through a series of swaps of adjacent operations, where no swap falls into one of the following patterns:\par
+\par
+    the operations are by the same transaction\par
+    the operations use the same database element, and at least one is a write\par
+\par
+For example, Schedule U is conflict-equivalent to Serial Schedule 2, as shown by the following series of swaps.\par
+\par
+    Schedule U:\tab r2(A), w2(A), r1(A), w1(A), r2(B), w2(B)\par
+    swap w1(A) and r2(B): \tab r2(A), w2(A), r1(A), r2(B), w1(A), w2(B)\par
+    swap w1(A) and w2(B): \tab r2(A), w2(A), r1(A), r2(B), w2(B), w1(A)\par
+    swap r1(A) and r2(B): \tab r2(A), w2(A), r2(B), r1(A), w2(B), w1(A)\par
+    swap r1(A) and w2(B): \tab r2(A), w2(A), r2(B), w2(B), r1(A), w1(A) \par
+\par
+A schedule is conflict-serializable if it is conflict-equivalent to some serial schedule. We've just shown that Schedule U is conflict-serializable.\par
+\par
+You may wonder: Are all serializable schedules conflict-serializable? As you might expect, though, the answer is no. Consider the following schedule for a set of three transactions.\par
+\par
+    w1(A), w2(A), w2(B), w1(B), w3(B) \par
+\par
+We can perform no swaps to this: The first two operations are both on A and at least one is a write; the second and third operations are by the same transaction; the third and fourth are both on B at at least one is a write; and so are the fourth and fifth. So this schedule is not conflict-equivalent to anything else \emdash  and certainly not any serial schedules.\par
+\par
+However, since nobody ever reads the values written by the w1(A), w2(B), and w1(B) operations, the schedule has the same outcome as the serial schedule:\par
+\par
+    w1(A), w1(B), w2(A), w2(B), w3(B) \par
+\par
+3.2. Testing for conflict-serializability\par
+\par
+Using the definition of conflict-serializability to show that a schedule is conflict-serializable is quite cumbersome. There's a much more efficient algorithm:\par
+\par
+    Build a directed graph, with a vertex for each transaction.\par
+    Go through each operation of the schedule.\par
+        If the operation is of the form wi(X), find each subsequent operation in the schedule also operating on the same data element X by a different transaction: that is, anything of the form rj(X) or wj(X). For each such subsequent operation, add a directed edge in the graph from Ti to Tj.\par
+        If the operation is of the form ri(X), find each subsequent write to the same data element X by a different transaction: that is, anything of the form wj(X). For each such subsequent write, add a directed edge in the graph from Ti to Tj.\par
+    The schedule is conflict-serializable if and only if the resulting directed graph is acyclic. Moreover, we can perform a topological sort on the graph to discover the serial schedule to which the schedule is conflict-equivalent.\par
+\par
+As an example, consider the following schedule:\par
+\par
+    w1(A), r2(A), w1(B), w3(C), r2(C), r4(B), w2(D), w4(E), r5(D), w5(E) \par
+\par
+    We start with an empty graph with five vertices labeled T1, T2, T3, T4, T5.\par
+\par
+    We go through each operation in the schedule:\par
+    w1(A): \tab A is subsequently read by T2, so add edge T1 \u8594? T2\par
+    r2(A): \tab no subsequent writes to A, so no new edges\par
+    w1(B): \tab B is subsequently read by T4, so add edge T1 \u8594? T4\par
+    w3(C): \tab C is subsequently read by T2, so add edge T3 \u8594? T2\par
+    r2(C): \tab no subsequent writes to C, so no new edges\par
+    r4(B): \tab no subsequent writes to B, so no new edges\par
+    w2(D): \tab C is subsequently read by T2, so add edge T3 \u8594? T2\par
+    w4(E): \tab E is subsequently written by T5, so add edge T4 \u8594? T5\par
+    r5(D): \tab no subsequent writes to D, so no new edges\par
+    w5(E): \tab no subsequent operations on E, so no new edges\par
+\par
+    We end up with the following directed graph.\par
+\par
+    This graph has no cycles, so the original schedule must be serializable. Moreover, since one way to topologically sort the graph is T3\endash T1\endash T4\endash T2\endash T5, one serial schedule that is conflict-equivalent is\par
+\par
+        w3(C), w1(A), w1(B), r4(B), w4(E), r2(A), r2(C), w2(D), r5(D), w5(E) \par
+\par
+}
+ 

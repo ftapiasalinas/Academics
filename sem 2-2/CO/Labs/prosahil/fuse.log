@@ -1,0 +1,40 @@
+Running: C:\Xilinx\12.2\ISE_DS\ISE\bin\nt\unwrapped\fuse.exe -intstyle ise -incremental -lib uni9000_ver -lib aim_ver -lib cpld_ver -lib xilinxcorelib_ver -o C:/Documents and Settings/user/Desktop/prosahil/testbench_isim_beh.exe -prj C:/Documents and Settings/user/Desktop/prosahil/testbench_beh.prj work.testbench work.glbl 
+ISim M.63c (signature 0xb869381d)
+Number of CPUs detected in this system: 2
+Turning on mult-threading, number of parallel sub-compilation jobs: 4 
+Determining compilation order of HDL files
+Analyzing Verilog file \"C:/Documents and Settings/user/Desktop/prosahil/sahil.v\" into library work
+Analyzing Verilog file \"C:/Xilinx/12.2/ISE_DS/ISE//verilog/src/glbl.v\" into library work
+Starting static elaboration
+Completed static elaboration
+Fuse Memory Usage: 57644 KB
+Fuse CPU Usage: 140 ms
+Compiling module DFF
+Compiling module register
+Compiling module Mux2to1
+Compiling module decoder5to32
+Compiling module DFFlevel
+Compiling module register8bit
+Compiling module mux32to2
+Compiling module memory
+Compiling module registerlevel
+Compiling module CtrlUnit
+Compiling module Mux8to1
+Compiling module decoder3to8
+Compiling module RegisterFile
+Compiling module zeroext4to16
+Compiling module sext6to16
+Compiling module zeroext6to16
+Compiling module leftshift
+Compiling module sext9to16
+Compiling module Mux4to1
+Compiling module Alu
+Compiling module multi
+Compiling module testbench
+Compiling module glbl
+Time Resolution for simulation is 1ps.
+Waiting for 6 sub-compilation(s) to finish...
+Compiled 23 Verilog Units
+Built simulation executable C:/Documents and Settings/user/Desktop/prosahil/testbench_isim_beh.exe
+Fuse Memory Usage: 63152 KB
+Fuse CPU Usage: 202 ms

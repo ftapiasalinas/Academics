@@ -1,0 +1,19 @@
+\pcontentsline {1}{Introduction}{2}{3}{1}
+\pcontentsline {0}{Brief}{3}{7}{}
+\pcontentsline {0}{Outline}{7}{9}{}
+\pcontentsline {1}{Non-interactive Programming}{9}{10}{2}
+\pcontentsline {0}{Input-output}{10}{16}{}
+\pcontentsline {0}{Test files}{16}{20}{}
+\pcontentsline {0}{Planning the tests}{20}{24}{}
+\pcontentsline {0}{Using {\tt make}}{24}{29}{}
+\pcontentsline {0}{Exploiting Multitasking-1}{29}{31}{}
+\pcontentsline {0}{Exploiting Multitasking-2}{31}{34}{}
+\pcontentsline {1}{{Debugging with {\tt gdb}}}{34}{35}{3}
+\pcontentsline {0}{How to compile for debugging}{35}{43}{}
+\pcontentsline {0}{More on \texttt {gdb}}{43}{47}{}
+\pcontentsline {0}{Laborare est Orare}{47}{50}{}
+\pcontentsline {0}{Concrete Examples}{50}{56}{}
+\pcontentsline {0}{A Shell Script}{56}{64}{}
+\pcontentsline {0}{Finish}{64}{66}{}
+\pcontentsline {1}{Next Part}{66}{67}{4}
+\pcontentsline {0}{}{67}{73}{}

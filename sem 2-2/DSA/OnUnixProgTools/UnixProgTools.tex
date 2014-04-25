@@ -1,0 +1,296 @@
+\documentclass[pdf]{prosper}
+
+% Presentation on the make utility and other *n?x goodies
+% Created by: Ramprasad Joshi
+%             --Adapted from:
+%             my preentation RealCombinatorial.tex
+
+\usepackage[toc,highlight,HA]{HA-prosper}
+
+\HAPsetup{%
+trans=Dissolve,
+tsnav=FullScreen,
+nsnav=ShowBookmarks,
+lf={\href{mailto:rsj@bits-goa.ac.in}{Ramprasad Joshi}, \today},
+rf={Programming Tools on *n?x},
+iacolor=gray,
+stype=1
+}
+
+\title{Programming Tools on *n?x}
+\subtitle{make, gdb, shell, etc.}
+\author{LUG\\
+\institution{BITS, Pilani - K. K. Birla Goa Campus}\\
+\institution{\href{http://www.bits-goa.ac.in/CSIS/CSIS.htm}{http://www.bits-goa.ac.in/CSIS/CSIS.htm}}}
+
+
+\begin{document}
+
+% ==================================================================================
+% Slide 1
+\maketitle
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 2
+\tsectionandpart{Introduction}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 3
+\overlays{4}{
+\begin{slide}{Brief}
+Programming on a GNU/Linux is fun as well as efficient. The rich repertoire of tools available (as free software) makes it both.
+\begin{itemstep}
+  \xitem The {\tt gcc} system is actually much more than a C compiler: it is a posse of compilers -- C, C++, Java, Fortran, Common Lisp, and more
+  \xitem The {\tt make} utility is a powerful utility not only to compile incrementally (only the refreshed/updated files) but also to rebuild or reprocess any file that has been updated.
+  \xitem The debugger {\tt gdb} is a powerful source-level debugger for all the languages that {\tt gcc} compiles, and it is programmable itself! You can even write scripts for automating debugging and test-data collecting tasks in {\tt gdb} non-interactively.
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 4
+\overlays{2}{
+\begin{slide}{Outline}
+\begin{itemstep}
+  \xitem We are going to discuss:
+  \begin{itemize}
+    \xitem How to write programs that need not be tested interactively
+    \xitem How to construct test files
+    \xitem How to use {\tt make}
+    \xitem How to debug using {\tt gdb}
+    \xitem Shell basics
+  \end{itemize}
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 5
+\tsectionandpart{Non-interactive Programming}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 6
+\overlays{6}{
+\begin{slide}[trans=Wipe]{Input-output}
+\begin{itemstep}
+  \xitem {\tt scanf} automatically consumes all and any whitespace, however long
+  \xitem Use only the format flags for the variables in {\tt scanf}
+  \xitem Such a program can then be run with input redirection
+  \xitem Like: ./a.out < inputfile
+  \xitem This makes your testing faster too: repeated trials with small changes to the code are now possible easily with a ready test input
+  \xitem *USE SHELL HISTORY*
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 7
+\overlays{4}{
+\begin{slide}{Test files}
+\begin{itemstep}
+  \xitem Always read input sizes and other parameters that decide how to read the input at the beginning
+  \xitem Fix a standard sequence for such parameters. e.g. Array sizes in sorting
+  \xitem Never use promts. Instead, prepare test files incrementally with the smallest or shortest input in one file, medium-sized in another, etc.
+  \xitem Use a random number generator program for generating test files with varying sizes and combinations (I'll share mine)
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 8
+\overlays{4}{
+\begin{slide}{Planning the tests}
+\begin{itemstep}
+  \xitem When writing a complex program, first write a skeleton that pretends to follow the same sequence of major steps except the actual computations
+  \xitem Prepare the test files and run the skeletal program on them to see if the input-output part is alright
+  \xitem Insert prompts at important points, but bracket them with preprocessor directives
+  \xitem And compile with the debug macro defined while testing
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 9
+\overlays{5}{
+\begin{slide}[trans=Replace]{Using {\tt make}}
+See the sample makefile.
+\begin{itemstep}
+ \xitem CC, LD, RM, CFLAGS, LDFLAGS, MAIN are shell-like variables
+ \xitem OBJS is a pattern substitution formula, a special {\tt make} variable
+ \xitem Anything that ends with a colon ':' is a target
+ \xitem A target is followed by its dependencies on the same line
+ \xitem On the following line, the means to achieve the target, using the variables and shell commands, and other targets
+\end{itemstep}
+
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 10
+\overlays{2}{
+\begin{slide}[trans=Replace,toc=Exploiting Multitasking-1]{}
+\begin{itemstep}
+  \xitem We may not be, but \texttt{*n?x} systems \emph{are} multitasking, and this is not a marketing gimmick
+  \xitem Very rarely these systems hang because of overload. Not much overheating too, unless the PC is bad. I have run laptops on \texttt{GNU/Linux} for weeks at a stretch doing hard numbercrunching unattended, handling even long powerdowns without need to rerun, \emph{unattended}. All you need to do is organize and do some shell-programming.
+\end{itemstep}
+\end{slide}
+}
+% Slide 11
+\overlays{3}{
+\begin{slide}[trans=Replace,toc=Exploiting Multitasking-2]{}
+\begin{itemstep}
+  \xitem First, open many terminals. One runs a \texttt{vi} clone. The \texttt{C}-program is always open in it, and you save it (\texttt{:w} and \emph{not} \texttt{:w\textbf{q}}) everytime you switch to another window (but \textbf{not} close this one).
+  \xitem In another terminal, run \texttt{gcc} or better \texttt{make} everytime you modify and save the program, to test the effect of the change.
+  \xitem In yet other terminals, you can keep open (running \texttt{vi} clones) your test input files, modify them time to time, save and test their effects in a similar manner. Of course, if you only change input, you do not need to recompile.
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 12
+\tsectionandpart{{Debugging with {\tt gdb}}}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 13
+\overlays{8}{
+\begin{slide}{How to compile for debugging}
+\begin{itemstep}
+  \xitem You need to compile with the \texttt{-g} flag, among others. (i.e. \texttt{\$ gcc -g ...})
+  \xitem Then the executable binary generated can be debugged with \texttt{gdb}. Or \texttt{ddd}.
+  \xitem For all languages compiled by the \texttt{GCC}, the \textsc{GNU Compiler Collection}, \texttt{gdb} can be used.
+  \xitem e.g. C++ (using the \texttt{g++} compiler), Java (using \texttt{gcj}), Fortran (\texttt{gfortran}), etc.
+  \xitem Many IDEs, including \texttt{Eclipse}, have in-built source-level visual debuggers, all using \texttt{gdb} at the lowest level.
+  \xitem \texttt{gdb} lets you run a program step-by-step
+  \xitem -   lets you set breakpoints and run up till any of them is encountered
+  \xitem -   lets you finish the current function (all the remaining lines in it as a single step)
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 14
+\overlays{4}{
+\begin{slide}{More on \texttt{gdb}}
+\begin{itemstep}
+  \xitem \texttt{gdb} lets you interrupt a program without loss of data
+  \xitem -  then examine and possibly modify contents of registers and variables
+  \xitem -  and continue running un interrupted again or step by step thenceforth.
+  \xitem -  And do many many many more things, including scripting and off-line unattended debugging!
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 15
+\overlays{3}{
+\begin{slide}{Laborare est Orare}
+\begin{itemstep}
+  \xitem Seeing is believing ...
+  \xitem The taste of the pudding is in eating it ...
+  \xitem The test of the program is after gdbing it ...
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 16
+\overlays{6}{
+\begin{slide}{Concrete Examples}
+\begin{itemstep}
+  \xitem Look at the program BubbleSort.c bundled with this.
+  \xitem Also see the Makefile. It is written to compile any standalone C source file into an executable.
+  \xitem So if you have name1.c and name2.c in the current directory, both with a main() in them, then issuing \texttt{make} will make two executables \texttt{xname1} and \texttt{xname2}
+  \xitem In BubbleSort, there are ``\texttt{assert}''s to check correctness at various important points
+  \xitem Issue \texttt{make debug} and build debug versions of the programs
+  \xitem Then use \texttt{gdb} to trace their executions to check how the \texttt{assert}s work.
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 17
+\overlays{8}{
+\begin{slide}{A Shell Script}
+\begin{itemstep}
+ \xitem Issue the following commands in a \texttt{bash} shell when the pwd is the directory containing the Makefile and BubbleSort.c bundled here:
+ \xitem \texttt{\$ make debug}
+ \xitem \texttt{\$ for ((i=1; i<=1000; i++)) ; do}
+ \xitem \texttt{\$ ((n=\$RANDOM \% 1000)) ; echo \$n > sortestin}
+ \xitem \texttt{\$ for ((i=0; i<\$n; i++)) ; do echo \$RANDOM ; done >> sortestin}
+ \xitem \texttt{\$ ./xBubbleSort < sortestin}
+ \xitem \texttt{\$ done > sortestout}
+ \xitem Wait patiently. Now (after quite some time) you get in \texttt{sortestout} two columns: n and the no. exchanges of BubbleSort on the randomly generated input of size n. To speed up, use just \texttt{make} instead of \texttt{make debug} above.
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 18
+\overlays{2}{
+\begin{slide}[toc=Finish]{Plotting the Graph}
+\begin{itemstep}
+ \xitem Now plot the graph by taking the two columns in \texttt{sortestout} as x and y columns
+ \xitem Use \texttt{gnuplot} or, if you are weak-hearted, \texttt{LibreOffice Calc}
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+% Slide 19
+\tsectionandpart{Next Part}
+% ==================================================================================
+
+
+% ==================================================================================
+% Slide 18
+\overlays{6}{
+\begin{slide}{}
+\begin{itemstep}
+  \xitem Stop
+  \xitem Watch
+  \xitem and
+  \xitem Do not go
+  \xitem Until you do what this tells you to do
+  \begin{itemize}
+    \xitem Work
+    \xitem in
+    \xitem Progress
+  \end{itemize}
+  \xitem Or regress ? ;-)
+\end{itemstep}
+\end{slide}
+}
+% ==================================================================================
+
+\end{document}
