@@ -1,0 +1,16 @@
+
+with no parameter
+O is constructed with 2
+A is constructed with 2
+O is constructed with 3
+B is constructed with 3
+D is constructed
+
+with one parameter
+
+with two parameter
+O is constructed with 10
+A is constructed with 10
+O is constructed with 15
+B is constructed with 15
+D is constructed with 10

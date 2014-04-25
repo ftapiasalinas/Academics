@@ -1,0 +1,14 @@
+#include <cstdio>
+
+class c1
+{
+	int i;
+	float f;
+	public:
+	void tell();
+};
+
+c1::void tell()
+{
+	printf("i = %d f = %lf\n" , i , f);
+}

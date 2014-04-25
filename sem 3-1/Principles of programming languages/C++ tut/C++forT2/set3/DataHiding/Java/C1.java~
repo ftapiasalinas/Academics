@@ -1,0 +1,11 @@
+import java.io;
+
+public class C1
+{
+	private int i;
+	private int j;
+	public void tell()
+	{
+		system.out.println(i + " " + j );
+	}
+}
