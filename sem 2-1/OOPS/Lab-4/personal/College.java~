@@ -1,0 +1,28 @@
+package personal;
+public class College 
+{
+	 String Univer,Colname;
+	 
+	 College()
+	 {
+		 Univer = "not set";
+		 Colname = "not set";			
+	 }
+	void getUniversityname()
+	{
+		System.out.println(Univer);
+	}
+	void getCollege()
+	{
+		System.out.println(Colname);
+	}
+	void setUniversity(String uniname)
+	{
+		Univer = uniname;		
+	}
+	void setCollege(String col)
+	{
+		Colname = col;
+	}
+	
+}

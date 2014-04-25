@@ -1,0 +1,36 @@
+package festival;
+import festival.*;
+public class Event 
+{
+	private double Eventno;
+	private int Position;
+	private String Eventname;
+	int i;
+	
+	Event()
+	{
+		Eventno = 0;
+		Position = 0;
+		Eventname = "no event";
+	}
+	void getposition()
+	{
+		System.out.println(Position);
+	}
+	void setposition(int position)
+	{
+		Position = position;
+	}
+	void setEventname(String evename)
+	{
+		Eventname = evename;
+	}
+	void setEventno(double eveno)
+	{
+		Eventno = eveno;
+	}
+	
+	
+}	
+
+

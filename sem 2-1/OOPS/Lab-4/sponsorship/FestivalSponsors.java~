@@ -1,0 +1,11 @@
+package sponsorship;
+
+abstract public class FestivalSponsors extends Sponsors{
+	
+	
+	abstract public void setName(String n);
+	abstract public void setAddress(String a);
+	abstract public String getName();
+	abstract public String getAddress();
+
+}

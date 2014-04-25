@@ -1,0 +1,5 @@
+interface NoOfYears
+{
+
+	int getnoOfYears();
+}

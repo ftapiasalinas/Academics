@@ -1,0 +1,16 @@
+package sponsorship;
+import festival.Event;
+
+abstract public class EventSponsors extends Sponsors{
+	
+	String event;
+	Event var;
+	
+	abstract public void setName(String n);
+	abstract public String getName();
+	abstract public void setAddress(String a);
+	abstract public String getAddress();
+	abstract public void setEvent(String n);
+	abstract public String getEvent();
+
+}

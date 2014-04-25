@@ -1,0 +1,21 @@
+package personal;
+public class Student extends Person
+{
+	public String College,ID,University;
+	public  String getname()
+	{
+		return name;
+	}	
+	public  void setname(String name)
+	{
+	this.name = name;
+	} 
+	public  void setage(int age)
+	{
+	this.age= age;
+	}
+	public  int getage()
+	{
+		return age;
+	}	
+}	
