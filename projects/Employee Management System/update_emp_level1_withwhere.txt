@@ -1,0 +1,88 @@
+create or replace PROCEDURE UPDATE_EMPLOYEE_LEVEL1(setclause varchar2,min_val int, max_val int, whereclause varchar2) AS
+
+    Connection_timeout exception;
+    pragma exception_init(Connection_timeout, -12170);
+    
+    Invalid_arg exception;
+    pragma exception_init(Invalid_arg, -12532);
+    
+    minval int := min_val;
+    maxval int := max_val;
+    cursor birthsitescur is select * from birthsites order by minval;
+    birthsitesval birthsites%rowtype;
+    
+    type empcurtype is ref cursor;
+    empcv empcurtype;
+    emprec employees%rowtype;
+    sqlstmt varchar2(200);
+    
+    error_code number;
+    error_msg varchar2(64);
+
+BEGIN
+    for birthsitesval in birthsitescur 
+    loop
+        if birthsitesval.tablename='employees' then
+            dbms_output.put_line('level 3: foumnd emplouyee in birthsite');
+            if (birthsitesval.minval > maxval) or (birthsitesval.maxval < minval) then --completely outside
+                dbms_output.put_line('level3 :completely outside can only contirnue');
+                continue;
+            end if;
+            
+            begin
+                if (birthsitesval.minval <= minval) and (birthsitesval.maxval >= maxval) then
+                    dbms_output.put_line('levele 3 : completely inside fetch and return');
+                    sqlstmt := 'update employees'||birthsitesval.birthsitelink||' ' || setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;
+                    dbms_output.put_line('level3: '||sqlstmt);
+                    update_triggerargs(min_val, max_val, setclause, birthsitesval.birthsitelink, whereclause);
+                    execute immediate sqlstmt;
+                    return;
+                end if;
+
+           exception  
+              when others then
+                  error_code := SQLCODE;
+                  error_msg := SUBSTR(SQLERRM,1,64);
+                  dbms_output.put_line('Not able to connect on network!'||error_code||' '||error_msg);
+    
+            end;
+            
+            begin
+                if (birthsitesval.minval > minval) and (not (birthsitesval.maxval < maxval)) then
+                    dbms_output.put_line('level 3: left split - cant be entertained');
+                    sqlstmt := 'update employees'||birthsitesval.birthsitelink||' ' ||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;
+                    dbms_output.put_line('level3: '||sqlstmt);
+                    update_triggerargs(min_val, max_val, setclause, birthsitesval.birthsitelink,whereclause);
+                    execute immediate sqlstmt;
+                    return; --left split and not right split
+                end if;
+            exception   
+                           
+                when others then
+                    error_code := SQLCODE;
+                    error_msg := SUBSTR(SQLERRM,1,64);
+                    dbms_output.put_line('Not able to connect on network!'||error_code||' '||error_msg);
+            
+            end;
+            
+            begin
+                if (birthsitesval.maxval < maxval) and (not (birthsitesval.minval > minval)) then --only right split
+                    dbms_output.put_line('level3 : rigth split');  
+                    sqlstmt := 'update employees'||birthsitesval.birthsitelink||' ' ||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;
+                    dbms_output.put_line('level3: '||sqlstmt);
+                    update_triggerargs(min_val, max_val, setclause, birthsitesval.birthsitelink, whereclause);
+                    execute immediate sqlstmt;
+                    minval := birthsitesval.maxval+1;
+                    continue;
+                end if;
+            exception   
+             
+                when others then
+                    error_code := SQLCODE;
+                    error_msg := SUBSTR(SQLERRM,1,64);
+                    dbms_output.put_line(error_code||' '||error_msg);
+            end;
+        end if;
+    end loop;
+      
+END;

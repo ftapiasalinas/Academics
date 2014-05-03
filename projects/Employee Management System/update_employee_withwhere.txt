@@ -1,0 +1,66 @@
+create or replace PROCEDURE UPDATE_EMPLOYEE(setclause varchar2, temp_minval int, temp_maxval int, whereclause varchar2) AS
+    
+    type empcurtype is ref cursor;
+    empcv empcurtype;
+    emprec employees%rowtype;
+    sqlstmt varchar2(200);
+    
+    cursor mytablescur is select * from mytables;
+    mytablescurval mytables%rowtype;
+    
+    maxval int := temp_maxval;
+    minval int := temp_minval;
+
+BEGIN
+    execute immediate 'truncate table trigger_args';
+    insert into trigger_args values(temp_minval, temp_maxval, setclause, whereclause);
+    for mytablescurval in mytablescur 
+    loop
+        if mytablescurval.name='employees' then
+            if (mytablescurval.minval <= minval) and (mytablescurval.maxval >= maxval) then --completely inside
+                dbms_output.put_line('completlty insdie');
+                sqlstmt := 'update employees '||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;  
+                dbms_output.put_line('lkevel1:'||sqlstmt);
+                execute immediate sqlstmt;
+                return;
+            end if;
+            
+            if (mytablescurval.minval > maxval) or (mytablescurval.maxval < minval) then
+                dbms_output.put_line('completely outside');
+                update_employee_level1(setclause, minval, maxval,whereclause);
+                return;
+            end if;
+            
+            if (mytablescurval.minval > minval) or  (mytablescurval.maxval < maxval) then
+                dbms_output.put_line('either left or rigth split');
+                if not mytablescurval.maxval < maxval then
+                    dbms_output.put_line('only left split');
+                    sqlstmt := 'update employees '||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;  
+                    execute immediate sqlstmt;
+                    maxval := mytablescurval.minval-1;
+                    update_employee_level1(setclause, minval, maxval, whereclause);
+                    dbms_output.put_line('level1 : fetched '||minval||' to '||maxval||' from only copied tables - exiting');
+                    return;
+                    
+                end if;
+                
+                if not mytablescurval.minval > minval then 
+                    dbms_output.put_line('only right split');
+                    sqlstmt := 'update employees '||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;              
+                    execute immediate sqlstmt;
+                    dbms_output.put_line('level1 : fetched '||minval||' to '||maxval||' from  local tables ');
+                    minval := mytablescurval.maxval + 1;
+                    update_employee_level1(setclause, minval, maxval,whereclause);
+                    return;
+                end if;
+                
+                dbms_output.put_line('both splits!'); 
+                sqlstmt := 'update employees '||setclause||' where id>='||minval||' and id<='||maxval||' '||whereclause;              
+                execute immediate sqlstmt;
+                update_employee_level1(setclause, minval, mytablescurval.minval-1, whereclause);
+                update_employee_level1(setclause, mytablescurval.maxval+1, maxval, whereclause);
+                return;
+            end if;
+        end if;
+    end loop;
+END;

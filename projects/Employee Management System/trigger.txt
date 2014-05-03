@@ -1,0 +1,52 @@
+create or replace trigger update_employee_trigger
+ after update on employees for each row
+ declare
+    cursor mytablescopycur is select * from Mytables_copy;
+    mytablescopyval varchar2(200);
+    --mytablescopyval mytablescopycur%rowtype;
+    sqlstmt varchar2(200);
+ begin
+    for mytablescopyval in mytablescopycur
+    loop
+        if mytablescopyval.tablename='employees' then
+            /*if mytablescopyval.remotelink='ankur_link' then
+                update employeescopypravin@ankur_link set name=:new.name, enddate=:new.enddate, joindate=:new.joindate, payscale=:new.payscale, skills=:new.skills where id=:old.id;
+            end if;
+            f
+            /*if mytablescopyval.remotelink='sahil_link' then
+                update employeescopypravin@ankur_link set name=:new.name, enddate:=new.enddate, joindate=:new.joindate, payscale=:new.payscale, skills=:new.skills where id=:old.id;
+            end if;
+            */
+            /*if mytablescopyval.remotelink='surya_link' then
+                update employeescopypravin@ankur_link set name=:new.name, enddate:=new.enddate, joindate=:new.joindate, payscale=:new.payscale, skills=:new.skills where id=:old.id;
+            end if;
+            */
+            dbms_output.put_line(sqlstmt);
+            --execute immediate sqlstmt;
+        end if;
+    end loop;
+    
+    exception
+        when others then
+            declare 
+                cursor cur is select * from mytables_copy;
+                curval mytables_copy%rowtype;
+            begin
+                update employees set name=:old.name, enddate=:old.enddate, joindate=:old.joindate, payscale=:old.payscale, skills=:old.skills where name=:new.name and enddate=:new.enddate and joindate=:new.joindate and payscale=:new.payscale and skills=:new.skills;
+                
+                for curval in cur 
+                loop
+                    if curval.tablename='employees' then
+                        if curval.remotelink='sahil_link' then
+                          update employeescopypravin@sahil_link set name=:old.name, enddate=:old.enddate, joindate=:old.joindate, payscale=:old.payscale, skills=:old.skills where name=:new.name and enddate=:new.enddate and joindate=:new.joindate and payscale=:new.payscale and skills=:new.skills;
+                        end if; 
+                    end if;
+                    
+                    if curval.tablename='employees' then
+                        if curval.remotelink='surya_link' then
+                          update employeescopypravin@surya_link set name=:old.name, enddate=:old.enddate, joindate=:old.joindate, payscale=:old.payscale, skills=:old.skills where name=:new.name and enddate=:new.enddate and joindate=:new.joindate and payscale=:new.payscale and skills=:new.skills;
+                        end if; 
+                    end if;
+                end loop;
+            end;
+ end;

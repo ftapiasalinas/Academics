@@ -1,0 +1,10 @@
+create or replace procedure copytoankur as
+    cursor cur1 is select * from employees@ankur_link where id>=350 and id<=370;
+    curval employees%rowtype;
+    begin
+        for curval in cur1 
+        loop
+            insert into employeescopyankur values(curval.id, curval.name, curval.payscale, curval.joindate, curval.enddate, curval.skills, curval.salary);
+        end loop;
+    end;
+    
