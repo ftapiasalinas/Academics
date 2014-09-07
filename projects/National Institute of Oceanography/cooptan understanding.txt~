@@ -1,0 +1,16 @@
+particle filtering algorithm - It is used to track the state of dynamic moving object.(approx) This is the basis of determining position of the vehicle.Because, like Kalman filters, they’re a great way to track the state of a dynamic system for which you have a Bayesian model. That means that if you have a model of how the system changes in time, possibly in response to inputs, and a model of what observations you should see in particular states,you can use particle filters to track your belief state. 
+
+The map of the seabed is assumed to be known.
+They reduce the problem of finding the position of the vehicle in 2-D to improve the performance of the particle filtering algorithm by assuming the depth of the vehicle is given.The 2 parameters are rotation and relative velocity w.r.t to sea bed.
+
+The error or noise is taken in terms of gaussian noise.
+Sonar  - sound navigation
+
+Problem statement
+Given the kinematic models of two underwater vehicles AUV1 and AUV2, a bathy-
+metric map of the area of interest, and measurements of ranges and velocity ob-
+tained by the two vehicles with respect to the seabed, estimate the position of AUV1
+relative to an inertial frame(start) using: its own measurements, the inter-range measure-
+ments between AUV1 and AUV2 and the communicated measurements obtained by
+AUV2.
+
