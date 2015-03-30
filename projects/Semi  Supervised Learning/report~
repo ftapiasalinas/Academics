@@ -1,0 +1,22 @@
+Abstract:
+
+Semi supervised learning methods have gained importance in today's world because of large expenses involved in labeling the unlabeled data manually. The proposed approach uses SVM and Label Propagation to label the unlabeled data. In the process, at each step SVM is trained to minimize the error and thus improve the prediction quality. The approach is tested using 12 datasets of different sizes ranging from order of 1000s to order of 10000s. Results show that the proposed approach outperforms Label Propagation alone by a large margin with F-measure of almost twice on average as compared to Label Propagation.
+
+Conclusion and Future work:
+
+The proposed approach uses SVM along with Label Propogation algorithm to yield a very high overall prediction quality. It can use a small amount of labeled data along with a large quantity of unlabeled data to yield a high F-measure on test data. It has a very small margin for error since it labels the unlabel data using consent of both - SVM and Label Propagation. On testing both the algorithms on 12 different datasets we can conclude that the proposed approach performs much better than Label Propagation alone. It yields F-measure values which are almost twice as compared to Label Propagation. Further, we designed the parallel version of the approach and were able to decrease the training time significantly. In future, the parallel algorithm can be further enhanced to yield linear or super linear scaleups. Also, more can be explored on using Supervised approaches along with Unsupervised approach to further improve prediction quality.
+
+Related work:
+
+
+Introduction:
+
+In many real world scenarios, the proportion of labeled and unlabeled data is very skewed. This is mainly because labeling the unlabeled data is labor expensive and time consuming. It is mainly for this reason that semi supervised approaches are preferred over supervised ones despite knowing that latter will perform better than the former. Semi supervised learning model can either be built by first training the model on unlabeled data and using labeled data to induce class labels or vice versa.
+
+Semi supervised learning methods are mainly classified into two broad classes : Transductive and Generative. The goal of transductive models is to label the given unlabeled data in the best possible way. They seek to find out the probability P(Y|X) where Y is class label and X is the feature vector. Gaussian processes, transductive SVM and graph-based methods fall in this category. On the other hand, Generative models are designed to label the unlabeled records from the whole sample space. These methods are based on joint distribution and examples include Expectation Maximization.
+
+Transductive and Generative models are often explained using following analogy: Transductive learning is compared to the situation when a student learns concepts and wants to perform well just in the given home assignment. On the other hand, when a student prepares so as perform well on ANY unseen question, it is analogus to Generative learning.
+
+The proposed approach labels the unlabeled data using Label Propogation and SVM. At every step in the process, it fits the model to minimize error and thus improve the prediction quality. 
+
+The remainder of the paper is organized as follows: Section 2 discuses the related work and the proposed approach is presented in section 3. Section 4 contains the experimental results and comparison of the proposed approach with the Label Propagation algorithm followed by Conclusion and future work in section.

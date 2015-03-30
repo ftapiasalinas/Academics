@@ -1,0 +1,53 @@
+A lot of work has been done in the field of semi-supervised learning in which major role has to be played by the unlabeled data which is in huge amount as compared to the amount of labeled data.(Castelli & Cover, 1995),(Castelli & Cover, 1996) and  (Ratsaby & Venkatesh,1995) showed that unlabeled data can predict better if the model assumption is correct. But if the model assumption is wrong, unlabeled data may actually hurt accuracy. Another technique that can be used to get the model correct is to down weight the unlabeled data (Corduneanu & Jaakkola, 2001).Callison-Burch et al. (2004) used the down-weighing scheme to estimate word alignment for machine translation.
+
+A lot of algorithms have been designed to make use of abundant unlabeled data. Nigam et al. (2000) apply the Expectation Maximization (Dempster et. al. 1997) algorithm on mixture of multinomial for the task of text classification and showed the resulting classifiers predict better than classifier trained only on labeled data.
+Clustering has also been employed over the years to make use of unlableled data along with the labeled data.The dataset is clustered and then each cluster is labeled with the help of labeled data.(Demiriz et al., 1999) and (Daraet al., 2002) used this cluster and label approach succesfully. 
+
+A commonly used technique for semi-supervised learning is self-training. In this a classifier is initially trained with the small quantity of labeled data. The classifier is then used to classify the unlabeled data and most confident points are added to the training set.The classifier is re-trained and the procedure repeated.Word sense disambiguation is succesfully achieved by Yarowsky (1995) using self-training.Subjective nouns are identified by Riloff et.al (2003).Parsing and machine translation is also done with the help of self training methods as shown by Rosenberg et al. (2005) in detection of object systems from images.
+
+A very different method in the field of semi supervised learning is called as Co-training. Co-training (Blum & Mitchell, 1998) assumes that (i) features can be split into two sets; (ii) each sub-feature set is sufficient to train a good classifier; (iii) the two sets are conditionally independent given the class. Balcan and Blum (2006) show that co-training can be quite effective, that in the extreme case only one labeled point is needed to learn the classifier.
+
+A very effective way to combine labeled data with unlabeled data is described by Xiaojin Zhu et. al. which propagated labels from labeled data points to unlabeled ones.An approach based on a linear neighborhood model is discussed by Fei Wang et. al which can propagate the labels from the labeled points to the whole data set using these linear neighborhoods with sufficient smoothness.
+
+
+
+
+--- Castelli, V., & Cover, T. (1995). The exponential value of labeled samples. Pattern Recognition Letters, 16, 105–111.
+
+--- Castelli, V., & Cover, T. (1996). The relative value of labeled and unlabeled samples in pattern recognition with an unknown mixing parameter. IEEE Transactions on Information Theory, 42, 2101–2117.
+
+--- Ratsaby, J., & Venkatesh, S. (1995). Learning from a mixture of labeled and unlabeled examples with parametric side information. Proceedings of the Eighth Annual Conference on Computational Learning Theory, 412–417.
+
+---  Corduneanu, A., & Jaakkola, T. (2001). Stable mixing of complete and incomplete information (Technical Report AIM-2001-030). MIT AI Memo.
+
+--- Callison-Burch, C., Talbot, D., & Osborne, M. (2004). Statistical machine translation with word- and sentence-aligned parallel corpora. Proceedings of the ACL.
+
+--- Nigam, K., McCallum, A. K., Thrun, S., & Mitchell, T. (2000). Text classification from labeled and unlabeled documents using EM. Machine Learning, 39, 103–134.
+
+--- Dempster, A., Laird, N., & Rubin, D. (1977). Maximum likelihood from incomplete data via the EM algorithm. Journal of the Royal Statistical Society, Series B.
+
+--- Bennett, K., & Demiriz, A. (1999). Semi-supervised support vector machines.Advances in Neural Information Processing Systems, 11, 368–374.
+
+--- Dara, R., Kremer, S., & Stacey, D. (2002). Clsutering unlabeled data with SOMs improves classification of labeled real-world data. Proceedings of the World Congress on Computational Intelligence (WCCI).
+
+--- Yarowsky, D. (1995). Unsupervised word sense disambiguation rivaling supervised methods. Proceedings of the 33rd Annual Meeting of the Association for Computational Linguistics (pp. 189–196).
+
+--- Riloff, E., Wiebe, J., & Wilson, T. (2003). Learning subjective nouns using extraction pattern bootstrapping. Proceedings of the Seventh Conference on Natural Language Learning (CoNLL-2003).
+
+--- Rosenberg, C., Hebert, M., & Schneiderman, H. (2005). Semi-supervised self training of object detection models. Seventh IEEE Workshop on Applications of Computer Vision.
+
+--- Zhu, Xiaojin, and Zoubin Ghahramani. Learning from labeled and unlabeled data with label propagation. Technical Report CMU-CALD-02-107, Carnegie Mellon University, 2002.
+
+--- Label Propagation Through Linear Neighborhoods - Fei Wang, Changshui Zhang,2008 http://machinelearning.wustl.edu/mlpapers/paper_files/icml2006_WangZ06.pdf
+
+--- Blum, A., & Mitchell, T. (1998). Combining labeled and unlabeled data with co-training. COLT: Proceedings of the Workshop on Computational Learning Theory.
+
+--- Balcan, M.-F., & Blum, A. (2006). An augmented pac model for semi-supervised learning. In O. Chapelle, B. Sch ̈ olkopf and A. Zien (Eds.), Semi-supervised learning. MIT Press.
+
+--- Zhu, Xiaojin, John Lafferty, and Ronald Rosenfeld. Semi-supervised learning with graphs. Diss.Carnegie Mellon University, Language Technologies Institute, School of Computer Science, 2005
+
+--- Cozman, Fabio Gagliardi, Ira Cohen, and Marcelo Cesar Cirelo. "Semi-supervised learning of mixture models." ICML. 2003
+
+--- Cortes, Corinna, and Vladimir Vapnik. "Support-vector networks." Machine learning 20.3 (1995):273-297
+
+--- Scikit
